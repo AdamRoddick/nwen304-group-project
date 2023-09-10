@@ -1,0 +1,28 @@
+body {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-family: Oswald, sans-serif;
+    font-size: 46px;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #D2001A;
+    color: #fff;
+    padding: 10px 0;
+    text-align: left;
+}
+
+.header h1 {
+    margin-left: 80px;
+}
+
+#title {
+    color: #FFDE00;
+}
