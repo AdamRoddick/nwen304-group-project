@@ -24,20 +24,47 @@ body {
 .container {
     display: flex;
     justify-content: space-between;
-
     margin: 0 auto;
     padding: 20px;
 }
 
 .column {
-    flex: 1; /* Make all columns equal width initially */
+    flex: 1;
     padding: 20px;
-    background-color: #f0f0f0;
+    background-color: #EFEFEF;
     border: 1px solid #ddd;
     margin: 40px;
 }
 
 /* Make the middle column wider */
 .column.middle {
-    flex: 2; /* Adjust the flex value to make it wider */
+    flex: 2;
+}
+
+/* Style for the post form */
+.post-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.post-input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.post-button {
+    padding: 10px;
+    background-color: #0074e4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end; /* Align the button to the right within the column */
+}
+
+.post-button:hover {
+    background-color: #0056a7;
 }
