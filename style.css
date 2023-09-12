@@ -99,3 +99,53 @@ body {
     background-color: white;
     padding: 80px;
 }
+
+/* Style for post header */
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Style for post profile picture */
+.post-profile-picture {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Make it round */
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+/* Style for post username */
+.post-username {
+    font-size: 18px;
+    margin: 0;
+}
+
+/* Style for post time */
+.post-time {
+    font-size: 14px;
+    margin: 0;
+    color: #888;
+}
+
+/* Style for a single post */
+.post {
+    background-color: white;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+/* Style for post title */
+.post-title {
+    font-size: 18px;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+/* Style for post text */
+.post-text {
+    font-size: 16px;
+    margin: 0;
+}

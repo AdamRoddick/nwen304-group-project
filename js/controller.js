@@ -16,6 +16,12 @@ function addPost() {
     const user = "John Smith" //Placeholder name
     const time = getCurrentTime();
     const id = generateUniqueId();
+
+    //Create a new post object and add to posts list
+    const newPost = new Post(id, user, title, text, time);
+    postOperations.add(newPost);
+
+
 }
 
 function getCurrentTime() {
