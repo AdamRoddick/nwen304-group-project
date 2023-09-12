@@ -4,6 +4,8 @@ function init() {
     bindEvents();
 }
 
+let auto = autoGen();
+
 function bindEvents() {
     document.querySelector('#post-button').addEventListener('click', addPost);
 }
@@ -13,6 +15,7 @@ function addPost() {
     const text = document.querySelector('#post-text').value;
     const user = "John Smith" //Placeholder name
     const time = getCurrentTime();
+    const id = generateUniqueId();
 }
 
 function getCurrentTime() {
@@ -27,3 +30,13 @@ function getCurrentTime() {
     // Return the formatted time as a string
     return formattedTime;
 }
+
+function generateUniqueId() {
+    // Generate a timestamp (numeric portion of the current time)
+    var timestamp = new Date().getTime();
+    // Generate a random 4-digit number
+    var random = Math.floor(Math.random() * 10000);
+    // Combine the timestamp and random number to create a unique ID
+    var uniqueId = timestamp.toString() + random.toString();
+    return uniqueId;
+  }
