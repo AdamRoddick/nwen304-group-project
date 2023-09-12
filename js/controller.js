@@ -9,5 +9,6 @@ function bindEvents() {
 }
 
 function addPost() {
-    const text = document.querySelector('#post-button').value;
+    const title = document.querySelector('#post-title').value;
+    const text = document.querySelector('#post-text').value;
 }
