@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OurSpace</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
+    <script src="js/post.js"></script>
+    <script src="js/postoperations.js"></script>
+    <script src="js/controller.js"></script>
+    <script src="js/utils.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1 id="title">OurSpace</h1>
+    </div>
+
+    <div class="container">
+        <div class="column left">
+            <div class="side-profile">
+                <img src="images/default-avatar.jpg" alt="Profile Picture" class="profile-picture">
+                <h2>Your Name</h2>
+                <p>Your status will go here</p>
+            </div>
+        </div>
+        <div class="column middle">
+            <div class="create-post">
+                <h2>Create a Post</h2>
+                <form class="post-form">
+                    <textarea class="post-input" id="post-title" placeholder="Title"></textarea>
+                    <textarea class="post-input" id="post-text" placeholder="Write your post here"></textarea>
+                    <button class="post-button" id="post-button">Create Post</button>
+                </form>
+            </div>
+            <div class="post-list">
+                <!-- Posts will be dynamically added here -->
+            </div>
+        </div>
+        <div class="column right">
+            <h2>Followers/Friends</h2>
+            <p>The users followers (or friends) will go here</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+body {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    background-color: #EFEFEF;
+}
+
+.header {
+    background-color: #D2001A;
+    color: #fff;
+    padding: 20px 0;
+    text-align: left;
+}
+
+#title {
+    font-family: Oswald, sans-serif;
+    font-size: 46px;
+    margin: 0;
+    padding: 0;
+    color: #FFDE00;
+    margin-left: 80px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.column {
+
+    padding: 0px;
+
+    border: 1px solid #ddd;
+    margin: 40px;
+}
+
+/* Make the middle column wider */
+.column.middle {
+    width: 800px;
+}
+
+.column.left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 300px;
+}
+
+.column.right {
+    width: 300px;
+}
+
+/* Style for the post form */
+.post-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.post-input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.post-button {
+    padding: 10px;
+    background-color: #0074e4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end; /* Align the button to the right within the column */
+}
+
+.post-button:hover {
+    background-color: #0056a7;
+}
+
+.profile-picture {
+    width: 150px; /* Set the desired width for the profile picture */
+    height: 150px; /* Set the desired height for the profile picture */
+    object-fit: cover; /* Scale and crop the image to fit the specified dimensions */
+}
+
+.create-post {
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    margin: 20px;
+}
+
+.side-profile {
+    background-color: white;
+    padding: 80px;
+}
+
+/* Style for post header */
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Style for post profile picture */
+.post-profile-picture {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Make it round */
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+/* Style for post username */
+.post-username {
+    font-size: 18px;
+    margin: 0;
+}
+
+/* Style for post time */
+.post-time {
+    font-size: 14px;
+    margin: 0;
+    color: #888;
+}
+
+/* Style for a single post */
+.post {
+    background-color: white;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+/* Style for post title */
+.post-title {
+    font-size: 18px;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+/* Style for post text */
+.post-text {
+    font-size: 16px;
+    margin: 0;
+}
