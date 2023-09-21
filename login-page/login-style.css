@@ -1,0 +1,70 @@
+body {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    background-color: #f2f2f2;
+
+}
+
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    margin-top: 150px;
+    padding: 50px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+
+}
+
+h2 {
+    text-align: center;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+}
+
+.tab {
+    display: inline-block;
+    margin: 0 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.tab.active {
+    background-color: #D2001A;
+    color: #fff;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #D2001A;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
