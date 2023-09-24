@@ -7,10 +7,11 @@ function init() {
     postOperations.posts = JSON.parse(localStorage.getItem('posts')) || [];
 }
 
-let auto = autoGen();
+//let auto = autoGen();
 
 function bindEvents() {
     document.querySelector('#post-button').addEventListener('click', addPost);
+    document.querySelector('#register-form').addEventListener('submit', registerUser);
 }
 
 function addPost(event) {
@@ -38,6 +39,30 @@ function addPost(event) {
     document.querySelector('#post-title').value = '';
     document.querySelector('#post-text').value = '';
 }
+
+function registerUser(event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    const username = document.querySelector('#registerUsername').value;
+    const email = document.querySelector('#registerEmail').value;
+    const password = document.querySelector('#registerPassword').value;
+    const id = generateUniqueId();
+
+    // Create a new user object
+    const newUser = new User(id, username, email, password);
+
+    // Add the new user to the array
+    userOperations.add(newUser);
+
+    // Update the users in localStorage
+    Console.log("users")
+    localStorage.setItem('users', JSON.stringify(userOperations.users));
+
+    // Clear input fields
+    document.querySelector('#registerUsername').value = '';
+    document.querySelector('#registerEmail').value = '';
+    document.querySelector('#registerPassword').value = '';
+  }
 
 
 function displayPost(post) {
@@ -103,4 +128,4 @@ function generateUniqueId() {
     // Combine the timestamp and random number to create a unique ID
     var uniqueId = timestamp.toString() + random.toString();
     return uniqueId;
-  }
+}
