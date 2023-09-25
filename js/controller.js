@@ -5,13 +5,17 @@ function init() {
 
     // Initialize the postOperations.posts array with posts from localStorage
     postOperations.posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+    // Initialize the postOperations.posts array with posts from localStorage
+    userOperations.user = JSON.parse(localStorage.getItem('users')) || [];
 }
 
 //let auto = autoGen();
 
 function bindEvents() {
-    //document.querySelector('#post-button').addEventListener('click', addPost);
+    document.querySelector('#post-button').addEventListener('click', addPost);
     document.querySelector('#register-form').addEventListener('submit', registerUser);
+    document.querySelector('#login-form').addEventListener('submit', loginUser);
 }
 
 function addPost(event) {
@@ -61,7 +65,30 @@ function registerUser(event) {
     document.querySelector('#registerUsername').value = '';
     document.querySelector('#registerEmail').value = '';
     document.querySelector('#registerPassword').value = '';
-  }
+
+    // Redirect to index.html
+    window.location.href = '../index.html';
+}
+
+function loginUser(event) {
+    console.log('loginUser function called');
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    const username = document.querySelector('#loginUsername').value;
+    const password = document.querySelector('#loginPassword').value;
+
+    // Check if the email and password match a user in localStorage
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.username === username && u.password === password);
+
+    if (user) {
+        // Login successful, redirect to index.html
+        window.location.href = '../index.html';
+    } else {
+        // Login failed, display error message
+        console.error('Invalid email or password');
+    }
+}
 
 
 function displayPost(post) {
