@@ -135,11 +135,14 @@ function checkCurrentUser() {
     const currentUser = localStorage.getItem('currentUser');
     const logoutBtn = document.getElementById('logout-button');
     const loginBtn = document.getElementById('login-button');
+    const createPost = document.getElementById('create-post');
     if (currentUser) {
       logoutBtn.style.display = 'block';
       loginBtn.style.display = 'none';
+      createPost.style.display = 'block';
     } else {
       logoutBtn.style.display = 'none';
       loginBtn.style.display = 'block';
+      createPost.style.display = 'none';
     }
   }
