@@ -29,6 +29,7 @@ function registerUser(event) {
 
     // Update the users in localStorage
     localStorage.setItem('users', JSON.stringify(userOperations.users));
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
 
     // Clear input fields
     document.querySelector('#registerUsername').value = '';

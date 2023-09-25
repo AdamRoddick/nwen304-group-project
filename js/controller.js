@@ -8,6 +8,8 @@ function init() {
 
     // Initialize the postOperations.posts array with posts from localStorage
     userOperations.user = JSON.parse(localStorage.getItem('users')) || [];
+
+    displaySideProfileUSername()
 }
 
 //let auto = autoGen();
@@ -21,7 +23,7 @@ function addPost(event) {
 
     const title = document.querySelector('#post-title').value;
     const text = document.querySelector('#post-text').value;
-    const user = "John Smith"; // Placeholder name
+    const user = JSON.parse(localStorage.getItem('currentUser')).username;
     const time = getCurrentTime();
     const id = generateUniqueId();
 
@@ -105,4 +107,9 @@ function generateUniqueId() {
     // Combine the timestamp and random number to create a unique ID
     var uniqueId = timestamp.toString() + random.toString();
     return uniqueId;
+}
+
+function displaySideProfileUSername() {
+    const userDetails = JSON.parse(localStorage.getItem('currentUser'));
+    document.getElementById('side-profile-username').textContent = userDetails.username;
 }

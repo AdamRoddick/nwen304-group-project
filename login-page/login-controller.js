@@ -24,6 +24,7 @@ function loginUser(event) {
     const user = users.find(u => u.username === username && u.password === password);
 
     if (user) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
         // Login successful, redirect to index.html
         window.location.href = '../index.html';
     } else {
