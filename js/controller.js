@@ -16,6 +16,7 @@ function init() {
 
 function bindEvents() {
     document.querySelector('#post-button').addEventListener('click', addPost);
+    document.querySelector('#logout-button').addEventListener('click', logoutUser);
 }
 
 function addPost(event) {
@@ -112,4 +113,12 @@ function generateUniqueId() {
 function displaySideProfileUSername() {
     const userDetails = JSON.parse(localStorage.getItem('currentUser'));
     document.getElementById('side-profile-username').textContent = userDetails.username;
+}
+
+function logoutUser() {
+    const confirmed = confirm('Are you sure you want to log out?');
+    if (confirmed) {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login-page/login.html';
+    }
 }
