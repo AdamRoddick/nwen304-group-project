@@ -5,12 +5,20 @@ function init() {
 
     // Initialize the postOperations.posts array with posts from localStorage
     postOperations.posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+    // Initialize the postOperations.posts array with posts from localStorage
+    userOperations.user = JSON.parse(localStorage.getItem('users')) || [];
+
+    displaySideProfileUSername();
+    checkCurrentUser();
 }
 
-let auto = autoGen();
+//let auto = autoGen();
 
 function bindEvents() {
     document.querySelector('#post-button').addEventListener('click', addPost);
+    document.querySelector('#logout-button').addEventListener('click', logoutUser);
+    document.querySelector('#login-button').addEventListener('click', loginUser);
 }
 
 function addPost(event) {
@@ -18,7 +26,7 @@ function addPost(event) {
 
     const title = document.querySelector('#post-title').value;
     const text = document.querySelector('#post-text').value;
-    const user = "John Smith"; // Placeholder name
+    const user = JSON.parse(localStorage.getItem('currentUser')).username;
     const time = getCurrentTime();
     const id = generateUniqueId();
 
@@ -38,7 +46,6 @@ function addPost(event) {
     document.querySelector('#post-title').value = '';
     document.querySelector('#post-text').value = '';
 }
-
 
 function displayPost(post) {
     const postList = document.querySelector('.post-list');
@@ -103,4 +110,39 @@ function generateUniqueId() {
     // Combine the timestamp and random number to create a unique ID
     var uniqueId = timestamp.toString() + random.toString();
     return uniqueId;
+}
+
+function displaySideProfileUSername() {
+    const userDetails = JSON.parse(localStorage.getItem('currentUser'));
+    if (userDetails) {
+        document.getElementById('side-profile-username').textContent = userDetails.username;
+    }
+}
+
+function logoutUser() {
+    const confirmed = confirm('Are you sure you want to log out?');
+    if (confirmed) {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login-page/login.html';
+    }
+}
+
+function loginUser() {
+    window.location.href = 'login-page/login.html';
+}
+
+function checkCurrentUser() {
+    const currentUser = localStorage.getItem('currentUser');
+    const logoutBtn = document.getElementById('logout-button');
+    const loginBtn = document.getElementById('login-button');
+    const createPost = document.getElementById('create-post');
+    if (currentUser) {
+      logoutBtn.style.display = 'block';
+      loginBtn.style.display = 'none';
+      createPost.style.display = 'block';
+    } else {
+      logoutBtn.style.display = 'none';
+      loginBtn.style.display = 'block';
+      createPost.style.display = 'none';
+    }
   }

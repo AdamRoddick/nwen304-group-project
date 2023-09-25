@@ -27,6 +27,7 @@ body {
     justify-content: space-between;
     margin: 0 auto;
     padding: 20px;
+    min-height: 90vh; /* Ensure the container takes up at least the full viewport height */
 }
 
 .column {
@@ -43,6 +44,7 @@ body {
 }
 
 .column.left {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -83,9 +85,10 @@ body {
 }
 
 .profile-picture {
-    width: 150px; /* Set the desired width for the profile picture */
-    height: 150px; /* Set the desired height for the profile picture */
+    width: 75px; /* Set the desired width for the profile picture */
+    height: 75px; /* Set the desired height for the profile picture */
     object-fit: cover; /* Scale and crop the image to fit the specified dimensions */
+    padding: 15px;
 }
 
 .create-post {
@@ -96,9 +99,16 @@ body {
 }
 
 .side-profile {
-    background-color: white;
-    padding: 80px;
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Vertically center the content */
+    margin-bottom: 20px; /* Add some spacing at the bottom */
+    position: absolute;
+    bottom: 0; /* Position at the bottom */
+    width: 100%; /* Take up the full width of the column */
+    padding: 20px;
 }
+
+
 
 /* Style for post header */
 .post-header {
@@ -148,4 +158,38 @@ body {
 .post-text {
     font-size: 16px;
     margin: 0;
+}
+
+/* Style for the side button list */
+.side-button-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* Style for list items (buttons) */
+.side-button-list li {
+    margin-bottom: 10px;
+}
+
+/* Style for side buttons */
+.side-button {
+    padding: 10px 20px;
+    background-color: #0074e4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.side-button:hover {
+    background-color: #0056a7;
+}
+
+/* Style for the button icons */
+.button-icon {
+    width: 20px; /* Adjust the width of the icon as needed */
+    height: 20px; /* Adjust the height of the icon as needed */
+    margin-right: 10px; /* Add some spacing between the icon and text */
+    vertical-align: middle; /* Vertically align the icon with text */
 }
