@@ -14,8 +14,6 @@ function init() {
 
 function bindEvents() {
     document.querySelector('#post-button').addEventListener('click', addPost);
-    document.querySelector('#register-form').addEventListener('submit', registerUser);
-    document.querySelector('#login-form').addEventListener('submit', loginUser);
 }
 
 function addPost(event) {
@@ -43,53 +41,6 @@ function addPost(event) {
     document.querySelector('#post-title').value = '';
     document.querySelector('#post-text').value = '';
 }
-
-function registerUser(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-
-    const username = document.querySelector('#registerUsername').value;
-    const email = document.querySelector('#registerEmail').value;
-    const password = document.querySelector('#registerPassword').value;
-    const id = generateUniqueId();
-
-    // Create a new user object
-    const newUser = new User(id, username, email, password);
-
-    // Add the new user to the array
-    userOperations.add(newUser);
-
-    // Update the users in localStorage
-    localStorage.setItem('users', JSON.stringify(userOperations.users));
-
-    // Clear input fields
-    document.querySelector('#registerUsername').value = '';
-    document.querySelector('#registerEmail').value = '';
-    document.querySelector('#registerPassword').value = '';
-
-    // Redirect to index.html
-    window.location.href = '../index.html';
-}
-
-function loginUser(event) {
-    console.log('loginUser function called');
-    event.preventDefault(); // Prevent the default form submission behavior
-
-    const username = document.querySelector('#loginUsername').value;
-    const password = document.querySelector('#loginPassword').value;
-
-    // Check if the email and password match a user in localStorage
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(u => u.username === username && u.password === password);
-
-    if (user) {
-        // Login successful, redirect to index.html
-        window.location.href = '../index.html';
-    } else {
-        // Login failed, display error message
-        console.error('Invalid email or password');
-    }
-}
-
 
 function displayPost(post) {
     const postList = document.querySelector('.post-list');
