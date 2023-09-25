@@ -68,3 +68,17 @@ button[type="submit"] {
     border-radius: 5px;
     cursor: pointer;
 }
+
+.secondary-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #fff;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    color: black;
+    outline: 2px solid #D2001A;
+}
