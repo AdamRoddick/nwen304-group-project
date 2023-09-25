@@ -9,7 +9,8 @@ function init() {
     // Initialize the postOperations.posts array with posts from localStorage
     userOperations.user = JSON.parse(localStorage.getItem('users')) || [];
 
-    displaySideProfileUSername()
+    displaySideProfileUSername();
+    checkCurrentUser();
 }
 
 //let auto = autoGen();
@@ -17,6 +18,7 @@ function init() {
 function bindEvents() {
     document.querySelector('#post-button').addEventListener('click', addPost);
     document.querySelector('#logout-button').addEventListener('click', logoutUser);
+    document.querySelector('#login-button').addEventListener('click', loginUser);
 }
 
 function addPost(event) {
@@ -112,7 +114,9 @@ function generateUniqueId() {
 
 function displaySideProfileUSername() {
     const userDetails = JSON.parse(localStorage.getItem('currentUser'));
-    document.getElementById('side-profile-username').textContent = userDetails.username;
+    if (userDetails) {
+        document.getElementById('side-profile-username').textContent = userDetails.username;
+    }
 }
 
 function logoutUser() {
@@ -122,3 +126,20 @@ function logoutUser() {
         window.location.href = 'login-page/login.html';
     }
 }
+
+function loginUser() {
+    window.location.href = 'login-page/login.html';
+}
+
+function checkCurrentUser() {
+    const currentUser = localStorage.getItem('currentUser');
+    const logoutBtn = document.getElementById('logout-button');
+    const loginBtn = document.getElementById('login-button');
+    if (currentUser) {
+      logoutBtn.style.display = 'block';
+      loginBtn.style.display = 'none';
+    } else {
+      logoutBtn.style.display = 'none';
+      loginBtn.style.display = 'block';
+    }
+  }
