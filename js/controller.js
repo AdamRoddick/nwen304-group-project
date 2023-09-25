@@ -10,7 +10,7 @@ function init() {
 //let auto = autoGen();
 
 function bindEvents() {
-    document.querySelector('#post-button').addEventListener('click', addPost);
+    //document.querySelector('#post-button').addEventListener('click', addPost);
     document.querySelector('#register-form').addEventListener('submit', registerUser);
 }
 
@@ -55,7 +55,6 @@ function registerUser(event) {
     userOperations.add(newUser);
 
     // Update the users in localStorage
-    Console.log("users")
     localStorage.setItem('users', JSON.stringify(userOperations.users));
 
     // Clear input fields

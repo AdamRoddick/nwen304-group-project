@@ -9,17 +9,12 @@
     <script src="../js/post.js"></script>
     <script src="../js/postoperations.js"></script>
     <script src="../js/controller.js"></script>
-    <script src="../js/utils.js"></script>
     <script src="../js/user.js"></script>
     <script src="../js/useroperations.js"></script>
 </head>
 <body>
     <div class="container">
         <h2>Welcome to OurSpace!</h2>
-        <div class="tabs">
-            <div class="tab active" onclick="showLoginForm()">Login</div>
-            <div class="tab" onclick="showRegisterForm()">Register</div>
-        </div>
         <form id="loginForm">
             <div class="form-group">
                 <label for="loginUsername">Username:</label>
@@ -31,44 +26,6 @@
             </div>
             <button type="submit">Login</button>
         </form>
-        <form id="registerForm" style="display: none;">
-            <div class="form-group">
-                <label for="registerUsername">Username:</label>
-                <input type="text" id="registerUsername" name="registerUsername" required>
-            </div>
-            <div class="form-group">
-                <label for="registerEmail">Email:</label>
-                <input type="email" id="registerEmail" name="registerEmail" required>
-            </div>
-            <div class="form-group">
-                <label for="registerPassword">Password:</label>
-                <input type="password" id="registerPassword" name="registerPassword" required>
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
-            </div>
-            <button type="submit">Register</button>
-        </form>
     </div>
-
-    <script>
-        function showLoginForm() {
-            document.getElementById("loginForm").style.display = "block";
-            document.getElementById("registerForm").style.display = "none";
-            document.querySelector(".tab.active").classList.remove("active");
-            document.querySelectorAll(".tab")[0].classList.add("active");
-        }
-
-        function showRegisterForm() {
-            document.getElementById("registerForm").style.display = "block";
-            document.getElementById("loginForm").style.display = "none";
-            document.querySelector(".tab.active").classList.remove("active");
-            document.querySelectorAll(".tab")[1].classList.add("active");
-        }
-
-        // Initially show the login form
-        showLoginForm();
-    </script>
 </body>
 </html>
