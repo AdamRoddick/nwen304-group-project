@@ -1,6 +1,6 @@
 
 
-function checkRequirements(password) {
+function evaluateRequirements(password) {
     // Minimum Password Length
     const minLength = 8;
     // Contains variables to check if the password contains at least one character from each category
@@ -69,5 +69,25 @@ function evaluatePassword(password) {
     }
 
     return parseInt(strength);
+}
+
+function checkComplexity(password) {
+    let strength = evaluatePassword(password);
+    if (strength > 80) {
+        return "strong";
+    }
+
+    if (strength > 60) {
+        return "okay";
+    }
+
+    if (strength > 40) {
+        return "weak";
+    }
+
+    if (strength >= 20) {
+        return "very weak";
+    }
+    return "";
 }
 
