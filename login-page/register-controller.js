@@ -19,10 +19,25 @@ function registerUser(event) {
     const username = document.querySelector('#registerUsername').value;
     const email = document.querySelector('#registerEmail').value;
     const password = document.querySelector('#registerPassword').value;
+
+    // Check if password meets requirement, and returns the evaluations
+    const meetsRequirement = passwordOperations.evaluateRequirements(password);
+    const meetsRequirementString = passwordOperations.checkRequirements(password);
+
+    const evaluateStrength = passwordOperations.checkComplexity(password);
+
+
     const id = generateUniqueId();
 
+    // document.querySelector('#registerPasswordStrength').value = evaluateStrength;
+
     // Create a new user object
-    const newUser = new User(id, username, email, password);
+    if (!meetsRequirement) {
+        alert(meetsRequirementString);
+        return;
+    } else {
+        const newUser = new User(id, username, email, password);
+    }
 
     // Add the new user to the array
     userOperations.add(newUser);
