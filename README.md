@@ -41,11 +41,11 @@ In this project, we are required to implement two flavors of CRUD (Create, Read,
 
 ### Core Requirements (55%)
 
-- [ ] Implement basic user registration functionality.
-- [ ] Implement basic user login/logout functionality.
+- [x] Implement basic user registration functionality.
+- [x] Implement basic user login/logout functionality.
 - [ ] Use a cloud-based NoSQL database (such as MongoDB or Firebase Real-time database).
-- [ ] Allow viewing items without authentication.
-- [ ] Support dynamic endpoints for various operations (get, put, delete).
+- [x] Allow viewing items without authentication.
+- [x] Support dynamic endpoints for various operations (get, put, delete).
 - [ ] Use client-side JavaScript for some functionality.
 - [ ] Allow the use of OAuth/OpenID Connect for user registration and authentication (Web application only).
 - [ ] Host your server on a cloud platform.
