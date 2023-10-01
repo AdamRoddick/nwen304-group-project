@@ -48,7 +48,7 @@ In this project, we are required to implement two flavors of CRUD (Create, Read,
 - [x] Support dynamic endpoints for various operations (get, put, delete).
 - [ ] Use client-side JavaScript for some functionality.
 - [ ] Allow the use of OAuth/OpenID Connect for user registration and authentication (Web application only).
-- [ ] Host your server on a cloud platform.
+- [x] Host your server on a cloud platform.
 
 ### Completion Requirements (25%)
 
