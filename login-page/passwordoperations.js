@@ -27,6 +27,13 @@ function evaluateRequirements(password) {
     return meetsRequirements;
 }
 
+function checkRequirements(password) {
+    if (!evaluateRequirements(password)) {
+        return "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one symbol";
+    }
+    return "";
+}
+
 function evaluatePassword(password) {
     
     // fields to measure strength
@@ -42,7 +49,7 @@ function evaluatePassword(password) {
         return strength;
     }
 
-    if (checkRequirements(password)) {
+    if (evaluateRequirements(password)) {
 
         let requirementVariation = {
             casesUpper: upperCase.test(password),
