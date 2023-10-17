@@ -21,10 +21,10 @@ function registerUser(event) {
     const password = document.querySelector('#registerPassword').value;
 
     // Check if password meets requirement, and returns the evaluations
-    const meetsRequirement = passwordOperations.evaluateRequirements(password);
-    const meetsRequirementString = passwordOperations.checkRequirements(password);
+    //const meetsRequirement = passwordOperations.evaluateRequirements(password);
+    //const meetsRequirementString = passwordOperations.checkRequirements(password);
 
-    const evaluateStrength = passwordOperations.checkComplexity(password);
+    //const evaluateStrength = passwordOperations.checkComplexity(password);
 
 
     const id = generateUniqueId();
@@ -32,12 +32,13 @@ function registerUser(event) {
     // document.querySelector('#registerPasswordStrength').value = evaluateStrength;
 
     // Create a new user object
-    if (!meetsRequirement) {
+    /*if (!meetsRequirement) {
         alert(meetsRequirementString);
         return;
     } else {
         const newUser = new User(id, username, email, password);
-    }
+    }*/
+    const newUser = new User(id, username, email, password);
 
     // Add the new user to the array
     userOperations.add(newUser);
