@@ -223,6 +223,7 @@ body {
 
 /* Style for side buttons */
 .side-button {
+    text-align: left;
     padding: 10px 20px;
     background-color: white;
     color: black;
