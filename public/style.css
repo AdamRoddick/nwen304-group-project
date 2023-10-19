@@ -106,11 +106,17 @@ body {
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
 }
 
+
 .post-button {
-    padding: 10px;
-    background-color: #0074e4;
+    padding: 15px; /* increased padding */
+    padding-left: 40px;
+    padding-right: 40px;
+    background-color: #333; /* changed background color to grey/black */
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -119,7 +125,7 @@ body {
 }
 
 .post-button:hover {
-    background-color: #0056a7;
+    background-color: #555; /* darker shade of grey/black on hover */
 }
 
 .profile-picture {
