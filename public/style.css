@@ -1,9 +1,49 @@
+/* Style for the profile picture */
+.profile-picture {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+/* Style for the side profile text */
+.side-profile-text {
+    text-align: center;
+}
+
+/* Style for the logout button */
+#logout-button {
+    display: none;
+}
+
+/* Style for the login button */
+#login-button {
+    display: none;
+}
+
+/* Style for the create post section */
+.create-post {
+    background-color: white;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+/* Style for the post list */
+.post-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
+}
+
+/* New styles for a more modern look */
 body {
     font-family: "Noto Sans", sans-serif;
     font-size: 16px;
     margin: 0;
     padding: 0;
-    background-color: #EFEFEF;
+    background-color: #F5F5F5;
 }
 
 .header {
@@ -31,10 +71,8 @@ body {
 }
 
 .column {
-
     padding: 0px;
-
-    border: 1px solid #ddd;
+    border: none;
     margin: 40px;
 }
 
@@ -95,20 +133,25 @@ body {
     padding: 20px;
     background-color: white;
     border: 1px solid #ddd;
-    margin: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .side-profile {
     display: flex; /* Use flexbox for layout */
     align-items: center; /* Vertically center the content */
     margin-bottom: 20px; /* Add some spacing at the bottom */
-    position: absolute;
-    bottom: 0; /* Position at the bottom */
+    position: relative; /* Change position to relative */
+    margin-top: 20px; /* Add margin to push it down */
     width: 100%; /* Take up the full width of the column */
     padding: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
-
-
 
 /* Style for post header */
 .post-header {
@@ -145,6 +188,8 @@ body {
     border: 1px solid #ddd;
     margin-bottom: 20px;
     padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 /* Style for post title */
@@ -163,7 +208,12 @@ body {
 /* Style for the side button list */
 .side-button-list {
     list-style: none;
-    padding: 0;
+    padding: 20px; /* Add the same padding value as .post */
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 100%;
 }
 
 /* Style for list items (buttons) */
@@ -174,8 +224,8 @@ body {
 /* Style for side buttons */
 .side-button {
     padding: 10px 20px;
-    background-color: #0074e4;
-    color: #fff;
+    background-color: white;
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -183,7 +233,7 @@ body {
 }
 
 .side-button:hover {
-    background-color: #0056a7;
+    background-color: #aaaaaa;
 }
 
 /* Style for the button icons */
