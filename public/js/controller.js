@@ -123,12 +123,12 @@ function logoutUser() {
     const confirmed = confirm('Are you sure you want to log out?');
     if (confirmed) {
         localStorage.removeItem('currentUser');
-        window.location.href = 'login-page/login.html';
+        window.location.href = '/register';
     }
 }
 
 function loginUser() {
-    window.location.href = 'login-page/login.html';
+    window.location.href = '/login';
 }
 
 function checkCurrentUser() {

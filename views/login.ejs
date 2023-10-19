@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OurSpace</title>
-    <link rel="stylesheet" href="login-style.css">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../login-page/login-style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
     <script src="../js/post.js"></script>
     <script src="../js/postoperations.js"></script>
-    <script src="login-controller.js"></script>
+    <script src="../login-page/login-controller.js"></script>
     <script src="../js/user.js"></script>
     <script src="../js/useroperations.js"></script>
 </head>
 <body>
     <div class="container">
-        <h2>Welcome to OurSpace!</h2>
+        <h2>Welcome to <%= title %>!</h2>
         <form id="login-form">
             <div class="form-group">
                 <label for="loginUsername">Username:</label>
@@ -25,8 +25,8 @@
                 <input type="password" id="loginPassword" name="loginPassword" required>
             </div>
             <button type="submit">Login</button>
-            <button onclick="location.href='register.html'" class="secondary-button">Dont have an account? Register here</button>
-            <button onclick="location.href='../index.html'" class="secondary-button">View as guest</button>
+            <button onclick="location.href='/register'" class="secondary-button">Dont have an account? Register here</button>
+            <button onclick="location.href='/'" class="secondary-button">View as guest</button>
         </form>
     </div>
 </body>
