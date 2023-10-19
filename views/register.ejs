@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OurSpace</title>
-    <link rel="stylesheet" href="login-style.css">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../login-page/login-style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
     <script src="../js/post.js"></script>
     <script src="../js/postoperations.js"></script>
-    <script src="register-controller.js"></script>
+    <script src="../login-page/register-controller.js"></script>
     <script src="../js/user.js"></script>
     <script src="../js/useroperations.js"></script>
-    <script src="passwordOperations.js"></script>
+    <script src="../login-page/passwordOperations.js"></script>
 </head>
 <body>
     <div class="container">
-        <h2>Welcome to OurSpace!</h2>
+        <h2>Welcome to <%= title %>!</h2>
         <form id="register-form">
             <div class="form-group">
                 <label for="registerUsername">Username:</label>
@@ -34,7 +34,7 @@
                 <input type="password" id="confirmPassword" name="confirmPassword" required>
             </div>
             <button type="submit">Register</button>
-            <button onclick="location.href='login.html'" class="secondary-button">Already have an account? Login here</button>
+            <button onclick="location.href='/login'" class="secondary-button">Already have an account? Login here</button>
         </form>
     </div>
 </body>

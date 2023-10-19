@@ -53,7 +53,7 @@ function registerUser(event) {
     document.querySelector('#registerPassword').value = '';
 
     // Redirect to index.html
-    window.location.href = '../index.html';
+    window.location.href = '/';
 }
 
 // Call the function to display existing posts when the page loads

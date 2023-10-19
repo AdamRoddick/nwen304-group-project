@@ -26,7 +26,7 @@ function loginUser(event) {
     if (user) {
         localStorage.setItem('currentUser', JSON.stringify(user));
         // Login successful, redirect to index.html
-        window.location.href = '../index.html';
+        window.location.href = '/';
     } else {
         // Login failed, display error message
         alert('Invalid username or password');
