@@ -19,11 +19,11 @@ function registerUser(event) {
     const username = document.querySelector('#registerUsername').value;
     const email = document.querySelector('#registerEmail').value;
     const password = document.querySelector('#registerPassword').value;
-    const confirm = document.querySelector('#registerConfirmPassword').value;
+    const confirm = document.querySelector('#confirmPassword').value;
 
     // Check if password meets requirement, and returns the evaluations
 
-    const meetsRequirement = passwordOperations.meetsRequirement(password);
+    const meetsRequirement = passwordOperations.evaluateRequirements(password);
 
     if (!meetsRequirement) {
         alert(passwordOperations.checkRequirements(password));
@@ -50,7 +50,7 @@ function registerUser(event) {
     document.querySelector('#registerUsername').value = '';
     document.querySelector('#registerEmail').value = '';
     document.querySelector('#registerPassword').value = '';
-    document.querySelector('#registerConfirmPassword').value = '';
+    document.querySelector('#confirmPassword').value = '';
 
     // Redirect to index.html
     window.location.href = '/';
