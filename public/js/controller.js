@@ -73,6 +73,25 @@ function displayPost(post) {
     postList.appendChild(postElement);
 }
 
+function displayUser(user) {
+    const userList = document.querySelector('.recommended-users');
+
+    const postElement = document.createElement('div');
+    postElement.classList.add('user');
+
+    postElement.innerHTML = `
+        <div class="recommended-user-profile">
+            <img src="images/default-avatar.jpg" alt="Profile Picture" class="profile-picture">
+            <div class="recommended-profile-text">
+                <h4 id="recommended-profile-username">${user.username}</h4>
+                <p>Your status will go here</p>
+            </div>
+        </div>
+    `;
+
+    userList.appendChild(postElement);
+}
+
 // Function to initialize and display existing posts
 function displayExistingPosts() {
     const postList = document.querySelector('.post-list');
@@ -83,10 +102,26 @@ function displayExistingPosts() {
     }
 }
 
+// Function to initialize and display recommended users
+function displayRecommendedUsers() {
+    const userList = document.querySelector('.recommended-users');
+
+    // Loop through top 5 users
+    var i = 0;
+    for (const user of userOperations.users) {
+        if (i > 5) {
+            break;
+        }
+        i++;
+        displayUser(user);
+    }
+}
+
 // Call the function to display existing posts when the page loads
 window.addEventListener("load", () => {
     init();
     displayExistingPosts();
+    displayRecommendedUsers();
 });
 
 function getCurrentTime() {
