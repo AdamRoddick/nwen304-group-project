@@ -1,5 +1,6 @@
 window.addEventListener("load", init);
 
+
 function init() {
     bindEvents();
 
@@ -83,14 +84,15 @@ function displayUser(user) {
         <div class="recommended-user-profile">
             <img src="images/default-avatar.jpg" alt="Profile Picture" class="profile-picture">
             <div class="recommended-profile-text">
-                <h4 id="recommended-profile-username">${user.username}</h4>
+                <h4 id="recommended-profile-username-${user.username}">${user.username}</h4>
             </div>
-            <button class="recommended-user-follow-button">Follow</button>
+            <button class="recommended-user-follow-button" id="follow-button-${user.username}">Follow</button>
         </div>
     `;
 
     userList.appendChild(postElement);
 }
+
 
 // Function to initialize and display existing posts
 function displayExistingPosts() {
@@ -105,17 +107,19 @@ function displayExistingPosts() {
 // Function to initialize and display recommended users
 function displayRecommendedUsers() {
     const userList = document.querySelector('.recommended-users');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-    // Loop through top 5 users
-    var i = 0;
     for (const user of userOperations.users) {
-        if (i > 5) {
-            break;
+        if (user.id !== currentUser.id && !currentUser.following.includes(user)) {
+            displayUser(user);
+
+            // Add an event listener to the "Follow" button for each recommended user
+            const followButton = document.getElementById(`follow-button-${user.username}`);
+            followButton.addEventListener('click', () => followUser(currentUser, user));
         }
-        i++;
-        displayUser(user);
     }
 }
+
 
 // Call the function to display existing posts when the page loads
 window.addEventListener("load", () => {
@@ -181,3 +185,16 @@ function checkCurrentUser() {
       createPost.style.display = 'none';
     }
   }
+
+  function followUser(currentUser, userToFollow) {
+    // Add the userToFollow to the currentUser's following list
+    currentUser.following.push(userToFollow);
+
+    // Update the following list in localStorage
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // Update the button text to show that the user is now following
+    const followButton = document.getElementById(`follow-button-${userToFollow.username}`);
+    followButton.textContent = 'Following';
+    followButton.disabled = true; // Optionally, disable the button to prevent multiple follows
+}
