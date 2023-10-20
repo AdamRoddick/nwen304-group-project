@@ -36,5 +36,9 @@ app.get('/register', (req, res) => {
     res.render('register', { title: 'OurSpace' });
 });
 
+app.get('/profile', (req, res) => {
+    res.render('profile', { title: 'OurSpace' });
+});
+
 
 exports.app = functions.https.onRequest(app);
