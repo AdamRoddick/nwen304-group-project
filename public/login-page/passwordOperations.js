@@ -22,20 +22,20 @@ const passwordOperations = {
                 break;
             default:
                 console.log("Password meets requirements");
+                meetsRequirements = true;
                 break;
         }
         return meetsRequirements;
     },
 
     checkRequirements(password) {
-        if (!evaluateRequirements(password)) {
+        if (!this.evaluateRequirements(password)) {
             return "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one symbol";
         }
         return "";
     },
 
     evaluatePassword(password) {
-        
         // fields to measure strength
         var strength = 0;
         var variations = 0;
@@ -49,7 +49,7 @@ const passwordOperations = {
             return strength;
         }
 
-        if (evaluateRequirements(password)) {
+        if (this.evaluateRequirements(password)) {
 
             let requirementVariation = {
                 casesUpper: upperCase.test(password),
@@ -74,12 +74,11 @@ const passwordOperations = {
                 strength += 5.0 / evalPassword[password[i]]; 
             }
         }
-
         return parseInt(strength);
     },
 
     checkComplexity(password) {
-        let strength = evaluatePassword(password);
+        let strength = this.evaluatePassword(password);
         if (strength > 80) {
             return "strong";
         }
@@ -95,6 +94,6 @@ const passwordOperations = {
         if (strength >= 20) {
             return "very weak";
         }
-        return "";
+        return "terrible";
     },
 }
