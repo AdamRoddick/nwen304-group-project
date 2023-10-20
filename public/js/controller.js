@@ -84,8 +84,8 @@ function displayUser(user) {
             <img src="images/default-avatar.jpg" alt="Profile Picture" class="profile-picture">
             <div class="recommended-profile-text">
                 <h4 id="recommended-profile-username">${user.username}</h4>
-                <p>Your status will go here</p>
             </div>
+            <button class="recommended-user-follow-button">Follow</button>
         </div>
     `;
 
