@@ -110,7 +110,7 @@ function displayRecommendedUsers() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     for (const user of userOperations.users) {
-        if (user.id !== currentUser.id && !currentUser.following.includes(user)) {
+        if (user.id !== currentUser.id && !followsUser(currentUser, user)) {
             displayUser(user);
 
             // Add an event listener to the "Follow" button for each recommended user
@@ -197,4 +197,14 @@ function checkCurrentUser() {
     const followButton = document.getElementById(`follow-button-${userToFollow.username}`);
     followButton.textContent = 'Following';
     followButton.disabled = true; // Optionally, disable the button to prevent multiple follows
+}
+
+function followsUser(user1, user2) {
+    for (const user of user1.following) {
+        if (user.id === user2.id) {
+            console.log(user.id + " : " + user2.id);
+            return true;
+        }
+    }
+    return false;
 }
