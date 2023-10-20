@@ -87,11 +87,11 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 300px;
+    width: 350px;
 }
 
 .column.right {
-    width: 300px;
+    width: 350px;
 }
 
 /* Style for the post form */
@@ -250,3 +250,43 @@ body {
     margin-right: 10px; /* Add some spacing between the icon and text */
     vertical-align: middle; /* Vertically align the icon with text */
 }
+
+.recommended-user-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    margin-top: 20px;
+    width: 100%;
+    padding: 5px;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+
+  .recommended-user-follow-button {
+    padding: 15px;
+    padding-left: 40px;
+    padding-right: 40px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }
+
+  .recommended-user-follow-button:hover {
+    background-color: #555; /* darker shade of grey/black on hover */
+  }
+
+  .recommended-user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
