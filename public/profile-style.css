@@ -61,6 +61,7 @@ body {
     padding: 0;
     color: #FFDE00;
     margin-left: 80px;
+    text-decoration: none !important;
 }
 
 .container {
