@@ -1,25 +1,22 @@
 let inactivityTimeout;
 
 window.addEventListener("load", function () {
-    // Start the inactivity timer with a 5-minute (300,000 milliseconds) timeout
     inactivityTimeout = setTimeout(redirectToLogin, 3000);
 
     // Add event listeners to reset the timer on user activity
     document.addEventListener("mousemove", resetInactivityTimeout);
     document.addEventListener("keydown", resetInactivityTimeout);
 
-    // Initialize your app
     init();
 });
 
 function resetInactivityTimeout() {
     // Reset the inactivity timer whenever there is user activity
     clearTimeout(inactivityTimeout);
-    inactivityTimeout = setTimeout(redirectToLogin, 3000); // Reset the timer to 5 minutes
+    inactivityTimeout = setTimeout(redirectToLogin, 3000);
 }
 
 function redirectToLogin() {
-    // Redirect the user to the login page after inactivity
     window.location.href = '/login';
 }
 
