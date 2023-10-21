@@ -20,6 +20,7 @@ function bindEvents() {
     document.querySelector('#post-button').addEventListener('click', addPost);
     document.querySelector('#logout-button').addEventListener('click', logoutUser);
     document.querySelector('#login-button').addEventListener('click', loginUser);
+    document.querySelector('#profile-button').addEventListener('click', gotoProfile);
 }
 
 function addPost(event) {
@@ -30,9 +31,10 @@ function addPost(event) {
     const user = JSON.parse(localStorage.getItem('currentUser')).username;
     const time = getCurrentTime();
     const id = generateUniqueId();
+    const userId = JSON.parse(localStorage.getItem('currentUser')).id;
 
     // Create a new post object
-    const newPost = new Post(id, user, title, text, time);
+    const newPost = new Post(id, user, title, text, time, userId);
 
     // Add the new post to the array
     postOperations.add(newPost);
@@ -197,7 +199,28 @@ function checkCurrentUser() {
     const followButton = document.getElementById(`follow-button-${userToFollow.username}`);
     followButton.textContent = 'Following';
     followButton.disabled = true; // Optionally, disable the button to prevent multiple follows
+
+    pushCurrentUser();
 }
+
+//ensure that the user in currentUser has the same properties as itself in other places (users list)
+function pushCurrentUser() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    for (const user of userOperations.users) {
+        if (user.id === currentUser.id) {
+            updateUsers(user.id, currentUser);
+        }
+    }
+}
+
+function updateUsers(userId, newUser) {
+    const userIndex = userOperations.users.findIndex(user => user.id === userId);
+    if (userIndex !== -1) {
+        console.log("test");
+        userOperations.users[userIndex] = newUser;
+        localStorage.setItem('users', JSON.stringify(userOperations.users));
+    }
+  }
 
 function followsUser(user1, user2) {
     for (const user of user1.following) {
@@ -207,4 +230,8 @@ function followsUser(user1, user2) {
         }
     }
     return false;
+}
+
+function gotoProfile() {
+    window.location.href = '/profile';
 }
