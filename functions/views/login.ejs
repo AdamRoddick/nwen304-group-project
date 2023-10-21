@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title>
+        <%= title %>
+    </title>
     <link rel="stylesheet" href="../login-page/login-style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
     <script src="../js/post.js"></script>
@@ -11,7 +14,12 @@
     <script src="../login-page/login-controller.js"></script>
     <script src="../js/user.js"></script>
     <script src="../js/useroperations.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js" defer></script>
 </head>
+
 <body>
     <div class="container">
         <h2>Welcome to <%= title %>!</h2>
@@ -25,9 +33,60 @@
                 <input type="password" id="loginPassword" name="loginPassword" required>
             </div>
             <button type="submit">Login</button>
-            <button onclick="location.href='/register'" class="secondary-button">Dont have an account? Register here</button>
+            <button onclick="location.href='/register'" class="secondary-button">Dont have an account? Register
+                here</button>
             <button onclick="location.href='/'" class="secondary-button">View as guest</button>
         </form>
+        <script>
+            window.addEventListener("DOMContentLoaded", () => {
+                // Initialise firebase
+                const firebaseConfig = {
+                    apiKey: "AIzaSyAcL_a8tS4bvMXFAr6oHJcWHkyjVFiYzb4",
+                    authDomain: "nwen304-groupproject-9db15.firebaseapp.com",
+                    databaseURL: "https://nwen304-groupproject-9db15-default-rtdb.asia-southeast1.firebasedatabase.app",
+                    projectId: "nwen304-groupproject-9db15",
+                    storageBucket: "nwen304-groupproject-9db15.appspot.com",
+                    messagingSenderId: "780741013383",
+                    appId: "1:780741013383:web:d216a031f2cccbddc22d22",
+                    measurementId: "G-TCLDG0Y66G"
+                };
+
+                firebase.initializeApp(firebaseConfig);
+                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+
+                document.getElementById("login-form")
+                    .addEventListener("submit", (event) => {
+                        event.preventDefault();
+                        const login = event.target.loginUsername.value;
+                        const password = event.target.loginPassword.value;
+
+                        firebase.auth().signInWithEmailAndPassword(login, password)
+                            .then(({ user }) => {
+                                return user.getIdToken().then((idToken) => {
+                                    return fetch("/login", {
+                                        method: "POST",
+                                        headers: {
+                                            Accept: "application/json",
+                                            "Content-Type": "application/json",
+                                            "CSRF-Token": Cookies.get("XSRF-TOKEN"),
+                                        },
+                                        body: JSON.stringify({ idToken }),
+                                    });
+                                });
+                            })
+                        .then(() => {
+                            // sign out from firebase
+                            return firebase.auth().signOut();
+                        })
+                        .then(() => {
+                            window.location.assign("/home");
+                        });
+                        return false;
+                    });
+            });
+                        
+        </script>
     </div>
 </body>
+
 </html>
