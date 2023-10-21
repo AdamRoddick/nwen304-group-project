@@ -19,6 +19,7 @@ function bindEvents() {
 window.addEventListener("load", () => {
     init();
     displayExistingPosts();
+    displayFollowerUsers();
     displayFollowingUsers();
 });
 
@@ -94,6 +95,45 @@ function displayFollowingUsers() {
 function followsUser(user1, user2) {
     for (const user of user1.following) {
         if (user.id === user2.id) {
+            console.log(user.id + " : " + user2.id);
+            return true;
+        }
+    }
+    return false;
+}
+
+function displayFollowerUser(user) {
+    const userList = document.querySelector('.followers-users');
+
+    const postElement = document.createElement('div');
+    postElement.classList.add('user');
+
+    postElement.innerHTML = `
+        <div class="recommended-user-profile">
+            <img src="images/default-avatar.jpg" alt="Profile Picture" class="profile-picture">
+            <div class="recommended-profile-text">
+                <h4 id="recommended-profile-username-${user.username}">${user.username}</h4>
+            </div>
+        </div>
+    `;
+
+    userList.appendChild(postElement);
+}
+
+function displayFollowerUsers() {
+    const userList = document.querySelector('.followers-users');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    for (const user of userOperations.users) {
+        if (followerUser(currentUser, user)) {
+            displayFollowerUser(user);
+        }
+    }
+}
+
+function followerUser(user1, user2) {
+    for (const user of user2.following) {
+        if (user.id === user1.id) {
             console.log(user.id + " : " + user2.id);
             return true;
         }

@@ -199,7 +199,28 @@ function checkCurrentUser() {
     const followButton = document.getElementById(`follow-button-${userToFollow.username}`);
     followButton.textContent = 'Following';
     followButton.disabled = true; // Optionally, disable the button to prevent multiple follows
+
+    pushCurrentUser();
 }
+
+//ensure that the user in currentUser has the same properties as itself in other places (users list)
+function pushCurrentUser() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    for (const user of userOperations.users) {
+        if (user.id === currentUser.id) {
+            updateUsers(user.id, currentUser);
+        }
+    }
+}
+
+function updateUsers(userId, newUser) {
+    const userIndex = userOperations.users.findIndex(user => user.id === userId);
+    if (userIndex !== -1) {
+        console.log("test");
+        userOperations.users[userIndex] = newUser;
+        localStorage.setItem('users', JSON.stringify(userOperations.users));
+    }
+  }
 
 function followsUser(user1, user2) {
     for (const user of user1.following) {
