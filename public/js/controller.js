@@ -18,6 +18,7 @@ function resetInactivityTimeout() {
 
 function redirectToLogin() {
     window.location.href = '/login';
+    localStorage.removeItem('currentUser');
 }
 
 
