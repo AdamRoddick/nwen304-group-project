@@ -46,7 +46,7 @@ In this project, we are required to implement two flavors of CRUD (Create, Read,
 - [ ] Use a cloud-based NoSQL database (such as MongoDB or Firebase Real-time database).
 - [x] Allow viewing items without authentication.
 - [x] Support dynamic endpoints for various operations (get, put, delete).
-- [ ] Use client-side JavaScript for some functionality.
+- [x] Use client-side JavaScript for some functionality.
 - [ ] Allow the use of OAuth/OpenID Connect for user registration and authentication (Web application only).
 - [x] Host your server on a cloud platform.
 
@@ -60,7 +60,7 @@ In this project, we are required to implement two flavors of CRUD (Create, Read,
 
 - [ ] Implement a recommendation service.
 - [ ] Implement an email loop for password reset.
-- [ ] Support a timeout function for user sessions.
+- [x] Support a timeout function for user sessions.
 
 ## Installation and Usage
 
