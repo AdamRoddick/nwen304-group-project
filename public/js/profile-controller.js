@@ -65,21 +65,49 @@ function displayExistingPosts() {
 
 function displayFollowingUser(user) {
     const userList = document.querySelector('.following-users');
+    const userElement = document.createElement('div');
+    userElement.classList.add('user');
 
-    const postElement = document.createElement('div');
-    postElement.classList.add('user');
-
-    postElement.innerHTML = `
+    userElement.innerHTML = `
         <div class="recommended-user-profile">
             <img src="images/default-avatar.jpg" alt="Profile Picture" class="profile-picture">
             <div class="recommended-profile-text">
                 <h4 id="recommended-profile-username-${user.username}">${user.username}</h4>
             </div>
         </div>
+        <button class="unfollow-button" data-user-id="${user.id}">Unfollow</button>
     `;
 
-    userList.appendChild(postElement);
+    userList.appendChild(userElement);
+
+    const unfollowButton = userElement.querySelector('.unfollow-button');
+    unfollowButton.addEventListener('click', () => unfollowUser(user));
 }
+
+function unfollowUser(userToUnfollow) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    // Remove the userToUnfollow from the current user's following list
+    currentUser.following = currentUser.following.filter(user => user.id !== userToUnfollow.id);
+
+    // Save the updated user information in local storage
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // Remove the displayed user from the following list
+    const userElement = document.querySelector(`#recommended-profile-username-${userToUnfollow.username}`).parentElement.parentElement;
+    userElement.remove();
+    updateUsers(userToUnfollow.id, currentUser);
+}
+
+function updateUsers(userId, newUser) {
+    const userIndex = userOperations.users.findIndex(user => user.id === userId);
+    if (userIndex !== -1) {
+        console.log("test");
+        userOperations.users[userIndex] = newUser;
+        localStorage.setItem('users', JSON.stringify(userOperations.users));
+    }
+  }
+
 
 function displayFollowingUsers() {
     const userList = document.querySelector('.following-users');
