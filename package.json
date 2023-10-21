@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/AdamRoddick/nwen304-group-project#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.6",
+    "csrf-csrf": "^3.0.1",
     "ejs": "^3.1.9",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "firebase-admin": "^11.11.0"
   }
 }

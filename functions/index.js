@@ -12,8 +12,15 @@ const bodyParser = require('body-parser');
 
 // For security 
 // Cross Site Request Forgery
-const csrf = require('csurf');
-const csrfMiddleware = csrf({ cookie: true });
+const {doubleCsrf} = require('csrf-csrf');
+const {
+    invalidCsrfTokenError, // This is just for convenience if you plan on making your own middleware.
+    generateToken, // Use this in your routes to provide a CSRF hash + token cookie and token.
+    validateRequest, // Also a convenience if you plan on making your own middleware.
+    doubleCsrfProtection, // This is the default CSRF protection middleware.
+  } = doubleCsrf(doubleCsrfOptions);
+
+const csrfMiddleware = doubleCsrfProtection();
 
 // For sessions and cookies
 const sessions = require('express-session');
