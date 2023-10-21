@@ -1,5 +1,7 @@
 let inactivityTimeout;
 const timeoutTime = 1800000; //30 minute minute timeout (1,800,000ms)
+var latitude = null;
+var longitude = null;
 
 window.addEventListener("load", function () {
     inactivityTimeout = setTimeout(redirectToLogin, timeoutTime);
@@ -10,8 +12,6 @@ window.addEventListener("load", function () {
 
     init();
 
-    // Get the user's location
-    getLocation();
 });
 
 function resetInactivityTimeout() {
@@ -26,7 +26,7 @@ function redirectToLogin() {
 }
 
 
-function init() {
+async function init() {
     bindEvents();
 
     // Initialize the postOperations.posts array with posts from localStorage
@@ -37,7 +37,10 @@ function init() {
 
     displaySideProfileUSername();
     checkCurrentUser();
-}
+    //GeoLocation.getLocation();
+    getLocation();
+    await updateUserLocation();
+  }
 
 //let auto = autoGen();
 
@@ -264,40 +267,52 @@ function gotoProfile() {
 // Add a function to get the user's location
 function getLocation() {
     // Check if the Geolocation API is supported in the user's browser
-if ("geolocation" in navigator) {
-    // Request permission to access the user's location
-    navigator.geolocation.getCurrentPosition(function (position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+    if ("geolocation" in navigator) {
+        // Request permission to access the user's location
+        navigator.geolocation.getCurrentPosition(function (position) {
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+            console.log(latitude);
 
-        // Use the location data in your application
-        console.log("Latitude: " + latitude);
-        console.log("Longitude: " + longitude);
+        }, function (error) {
+            // Handle errors if the user denies access or if there's an issue with geolocation
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    console.log("User denied the request for geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    console.log("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    console.log("The request to get user location timed out.");
+                    break;
+                default:
+                    console.log("An unknown error occurred.");
+            }
+        });
+    } else {
+        console.log("Geolocation is not supported in this browser.");
+    }
+}
 
-        // You can send this data to your server or use it for any other purpose
-    }, function (error) {
-        // Handle errors if the user denies access or if there's an issue with geolocation
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                console.log("User denied the request for geolocation.");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                console.log("Location information is unavailable.");
-                break;
-            case error.TIMEOUT:
-                console.log("The request to get user location timed out.");
-                break;
-            default:
-                console.log("An unknown error occurred.");
-        }
+function updateUserLocation() {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+
+            resolve();
+          },
+          (error) => {
+            console.log(error);
+            reject(error);
+          }
+        );
+      } else {
+        console.log('Geolocation is not supported by this browser.');
+        reject('Geolocation is not supported by this browser.');
+      }
     });
-} else {
-    console.log("Geolocation is not supported in this browser.");
-}
-}
-
-function displayLocation(latitude, longitude) {
-    // Display the user's location on the page or use it as needed
-    const locationElement = document.getElementById('user-location');
-    locationElement.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
-}
+  }

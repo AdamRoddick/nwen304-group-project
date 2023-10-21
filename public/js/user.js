@@ -5,6 +5,8 @@ class User {
         this.email = email;
         this.password = password;
         this.following = following || [];
+        this.latitude = null;
+        this.longitude = null;
     }
 
     followUser(user) {
