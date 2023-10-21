@@ -31,9 +31,10 @@ function addPost(event) {
     const user = JSON.parse(localStorage.getItem('currentUser')).username;
     const time = getCurrentTime();
     const id = generateUniqueId();
+    const userId = JSON.parse(localStorage.getItem('currentUser')).id;
 
     // Create a new post object
-    const newPost = new Post(id, user, title, text, time);
+    const newPost = new Post(id, user, title, text, time, userId);
 
     // Add the new post to the array
     postOperations.add(newPost);

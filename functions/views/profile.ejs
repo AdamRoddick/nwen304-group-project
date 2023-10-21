@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/profile-style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
+
+    <script src="/js/post.js"></script>
+    <script src="/js/postoperations.js"></script>
+    <script src="/js/profile-controller.js"></script>
+    <script src="/js/user.js"></script>
+    <script src="/js/useroperations.js"></script>
 
 </head>
 <body>
@@ -23,15 +29,8 @@
 
     <div class="container">
         <div class="column left">
-            <ul class="side-button-list">
-                <!-- Add buttons similar to your previous design -->
-            </ul>
-            <div class="side-profile">
-                <img src="/images/default-avatar.jpg" alt="Profile Picture" class="profile-picture">
-                <div class="side-profile-text">
-                    <h4 id="side-profile-username">Your Username</h4>
-                    <p>Your status will go here</p>
-                </div>
+            <div class="post-list">
+                <!-- Posts will be dynamically added here -->
             </div>
         </div>
         <div class="column middle">
