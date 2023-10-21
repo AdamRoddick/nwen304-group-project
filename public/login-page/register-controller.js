@@ -19,25 +19,24 @@ function registerUser(event) {
     const username = document.querySelector('#registerUsername').value;
     const email = document.querySelector('#registerEmail').value;
     const password = document.querySelector('#registerPassword').value;
+    const confirm = document.querySelector('#confirmPassword').value;
 
     // Check if password meets requirement, and returns the evaluations
-    //const meetsRequirement = passwordOperations.evaluateRequirements(password);
-    //const meetsRequirementString = passwordOperations.checkRequirements(password);
 
-    //const evaluateStrength = passwordOperations.checkComplexity(password);
+    const meetsRequirement = passwordOperations.evaluateRequirements(password);
 
+    if (!meetsRequirement) {
+        alert(passwordOperations.checkRequirements(password));
+        return;
+    }
+
+    if (password !== confirm) {
+        alert("Passwords do not match");
+        return;
+    }
 
     const id = generateUniqueId();
 
-    // document.querySelector('#registerPasswordStrength').value = evaluateStrength;
-
-    // Create a new user object
-    /*if (!meetsRequirement) {
-        alert(meetsRequirementString);
-        return;
-    } else {
-        const newUser = new User(id, username, email, password);
-    }*/
     const newUser = new User(id, username, email, password);
 
     // Add the new user to the array
@@ -51,6 +50,7 @@ function registerUser(event) {
     document.querySelector('#registerUsername').value = '';
     document.querySelector('#registerEmail').value = '';
     document.querySelector('#registerPassword').value = '';
+    document.querySelector('#confirmPassword').value = '';
 
     // Redirect to index.html
     window.location.href = '/';
@@ -60,6 +60,20 @@ function registerUser(event) {
 window.addEventListener("load", () => {
     init();
 });
+
+/**
+ * Checks for the password complexity in the input field
+ * 
+ * @param {*} input 
+ */
+function checkPasswordComplexity(input) {
+    const password = input.value
+    const passwordComplexity = document.querySelector('#registerPasswordStrength');
+    // Call the checkComplexity function from passwordOperations.js
+    // and pass the password as an argument
+    const passwordStrength = passwordOperations.checkComplexity(password);
+    passwordComplexity.textContent = `Password Strength: ${passwordStrength}`;
+}
 
 function generateUniqueId() {
     // Generate a timestamp (numeric portion of the current time)
