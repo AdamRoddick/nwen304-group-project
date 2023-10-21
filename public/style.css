@@ -310,3 +310,30 @@ body {
 .profile-info-item label {
     font-weight: bold;
 }
+
+.profile-info-item {
+    margin-left: 100px;
+}
+
+.profile-info-item label {
+    font-weight: bold;
+}
+
+.profile-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 40px;
+}
+
+.profile-top img{
+    height: 250px;
+    width: 250px;
+    border-radius: 50%;
+}

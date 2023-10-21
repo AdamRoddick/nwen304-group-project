@@ -3,14 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Profile - <%= title %></title>
+    <title><%= title %></title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
 
 </head>
 <body>
     <div class="header">
-        <h1 id="title">Your Profile - <%= title %></h1>
+        <h1 id="title"><%= title %></h1>
+    </div>
+    <div class="profile-top">
+        <img src="/images/default-avatar.jpg" alt="Profile Picture" class="profile-picture-large">
+        <h1 class="profile-info-item"><%= username %></h1>
+        <!-- The followers and following total count for this user-->
+        <h2 class="profile-info-item">Followers:</h2>
+        <h2 class="profile-info-item">Following:</h2>
+        <h2 class="profile-info-item"></h2>
     </div>
 
     <div class="container">

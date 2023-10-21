@@ -20,6 +20,7 @@ function bindEvents() {
     document.querySelector('#post-button').addEventListener('click', addPost);
     document.querySelector('#logout-button').addEventListener('click', logoutUser);
     document.querySelector('#login-button').addEventListener('click', loginUser);
+    document.querySelector('#profile-button').addEventListener('click', gotoProfile);
 }
 
 function addPost(event) {
@@ -207,4 +208,8 @@ function followsUser(user1, user2) {
         }
     }
     return false;
+}
+
+function gotoProfile() {
+    window.location.href = '/profile';
 }

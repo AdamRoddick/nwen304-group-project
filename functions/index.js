@@ -37,7 +37,13 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/profile', (req, res) => {
-    res.render('profile', { title: 'OurSpace' });
+
+    // Retrieve the username from local storage
+
+    res.render('profile', {
+        title: 'OurSpace',
+        username: 'Username' //Database should fetch the actual username and other stuff
+    });
 });
 
 

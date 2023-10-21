@@ -43,7 +43,7 @@
     },
     "singleProjectMode": true,
     "database": {
-      "port": 9001
+      "port": 9000
     }
   }
 }
