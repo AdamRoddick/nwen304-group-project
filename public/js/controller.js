@@ -1,4 +1,26 @@
-window.addEventListener("load", init);
+let inactivityTimeout;
+const timeoutTime = 1800000; //30 minute minute timeout (1,800,000ms)
+
+window.addEventListener("load", function () {
+    inactivityTimeout = setTimeout(redirectToLogin, timeoutTime);
+
+    // Add event listeners to reset the timer on user activity
+    document.addEventListener("mousemove", resetInactivityTimeout);
+    document.addEventListener("keydown", resetInactivityTimeout);
+
+    init();
+});
+
+function resetInactivityTimeout() {
+    // Reset the inactivity timer whenever there is user activity
+    clearTimeout(inactivityTimeout);
+    inactivityTimeout = setTimeout(redirectToLogin, timeoutTime);
+}
+
+function redirectToLogin() {
+    window.location.href = '/login';
+    localStorage.removeItem('currentUser');
+}
 
 
 function init() {
