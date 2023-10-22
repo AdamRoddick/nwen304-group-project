@@ -1,3 +1,12 @@
+var admin = require("firebase-admin");
+
+var serviceAccount = require("../ServiceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://nwen304-groupproject-9db15-default-rtdb.asia-southeast1.firebasedatabase.app"
+});
+
 const functions = require('firebase-functions');
 
 const http = require('http');
@@ -7,9 +16,18 @@ const app = express();
 //const sessions = require('express-session');
 const { initializeApp } = require('firebase-admin/app');
 
+//firestore database
+const db = admin.firestore();
+let customerRef = db.collection("Login Details");
+customerRef.get().then((QuerySnapshot) => {
+    QuerySnapshot.forEach(document => {
+        console.log(document.data());
+    })
+})
 
 const path = require('path');
 const ejs = require('ejs');
+const { QuerySnapshot } = require("firebase-admin/firestore");
 
 
 const port = process.env.PORT || 3000; // Use the specified port or 3000 by default
