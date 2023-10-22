@@ -36,7 +36,7 @@ function loginUser(event) {
 
     // Reference to "Login Details" collection in Firestore
 
-    const customerRef = index.db.collection("Login Details");
+    const customerRef = db.collection("Login Details");
     console.log("FIXMEPweaseaweqwdwqdwqd");
 
     // Query Firestore to check if the username and password match
@@ -56,7 +56,7 @@ function loginUser(event) {
         })
     })*/
 
-    fetch('/api/login-data')
+    fetch('/login')
     .then(response => response.json())
     .then(data => {
       // Process the data received from the server

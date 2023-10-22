@@ -13,6 +13,9 @@ const http = require('http');
 const express = require('express');
 const app = express();
 
+//since we have a front end framework ejs
+const cors = require('cors');
+
 //const sessions = require('express-session');
 const { initializeApp } = require('firebase-admin/app');
 
@@ -38,6 +41,12 @@ const publicDirectoryPath = path.join(__dirname, '/public');
 // Serve static files from the 'public' directory
 app.use(express.static(publicDirectoryPath));
 
+//to use body parts
+app.use(express.json());
+
+//to use cors for frontend framework
+app.use(cors());
+
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 
@@ -46,7 +55,7 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'OurSpace' });
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', async(req, res) => {
     res.render('login', { title: 'OurSpace' });
     const firestore = firebase.firestore();
     const loginCollection = firestore.collection('Login Details');
