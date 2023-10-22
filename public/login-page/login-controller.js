@@ -14,12 +14,14 @@ function bindEvents() {
 }
 
 function loginUser(event) {
+    var { QuerySnapshot } = require('@google-cloud/firestore');
+    var index = require('index.js');
     event.preventDefault(); // Prevent the default form submission behavior
 
     const username = document.querySelector('#loginUsername').value;
     const password = document.querySelector('#loginPassword').value;
 
-    // Check if the email and password match a user in localStorage
+    /*// Check if the email and password match a user in localStorage
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const user = users.find(u => u.username === username && u.password === password);
 
@@ -30,7 +32,30 @@ function loginUser(event) {
     } else {
         // Login failed, display error message
         alert('Invalid username or password');
+    }*/
+
+    // Reference to "Login Details" collection in Firestore
+    const customerRef = index.db.collection("Login Details");
+    if(){
+        console.debug("db collection notEmpty");
     }
+
+    // Query Firestore to check if the username and password match
+    customerRef.get().then((QuerySnapshot) => {
+        QuerySnapshot.forEach(document => {
+            const data = document.data();
+            const user = data.Username;
+            const pass = data.Password;
+
+            if(user == username){
+                if(pass == password){
+                    window.location.href = '/';
+                }
+            }else{
+                alert('Invalid username or password');
+            }
+        })
+    })
 }
 
 // Call the function to display existing posts when the page loads
