@@ -1,37 +1,14 @@
-var admin = require("firebase-admin");
-
-var serviceAccount = require("../ServiceAccountKey.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://nwen304-groupproject-9db15-default-rtdb.asia-southeast1.firebasedatabase.app"
-});
-
 const functions = require('firebase-functions');
-
-const http = require('http');
 const express = require('express');
 const app = express();
-
-//since we have a front end framework ejs
-const cors = require('cors');
-
-//const sessions = require('express-session');
-const { initializeApp } = require('firebase-admin/app');
-
-//firestore database
-const db = admin.firestore();
-let customerRef = db.collection("Login Details");
-customerRef.get().then((QuerySnapshot) => {
-    QuerySnapshot.forEach(document => {
-        console.log(document.data());
-    })
-})
-
 const path = require('path');
 const ejs = require('ejs');
-const { QuerySnapshot } = require("firebase-admin/firestore");
 
+// Require the Firebase Admin setup from the firebaseAdmin.js file
+const admin = require('./firebaseAdmin');
+
+// Firestore database reference
+const db = admin.firestore();
 
 const port = process.env.PORT || 3000; // Use the specified port or 3000 by default
 
@@ -57,41 +34,44 @@ app.get('/', (req, res) => {
 
 app.get('/login', async(req, res) => {
     res.render('login', { title: 'OurSpace' });
-    const firestore = firebase.firestore();
-    const loginCollection = firestore.collection('Login Details');
-  
-    loginCollection.get()
-      .then(QuerySnapshot => {
-        const loginDetails = [];
-        QuerySnapshot.forEach(document => {
-          const data = document.data();
-          loginDetails.push({
-            username: data.Username,
-            password: data.Password,
-          });
-        });
-        res.json(loginDetails);
-      })
-      .catch(error => {
-        console.error('Error fetching data from Firestore:', error);
-        res.status(500).json({ error: 'Server error' });
-      });
 });
 
 app.get('/register', (req, res) => {
     res.render('register', { title: 'OurSpace' });
 });
-  
 
 app.get('/profile', (req, res) => {
-
     // Retrieve the username from local storage
-
     res.render('profile', {
         title: 'OurSpace',
         username: 'Username' //Database should fetch the actual username and other stuff
     });
 });
 
+// Define the login route to handle authentication
+app.post('/api/login', (req, res) => {
+    // Handle user authentication here, possibly using Firebase Admin
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const customerRef = db.collection("Login Details");
+
+    customerRef.get().then((QuerySnapshot) => {
+        QuerySnapshot.forEach(document => {
+            const data = document.data();
+            if (data.Username === username && data.Password === password) {
+                // Authentication successful, return a success response
+                res.json({ success: true });
+                return;
+            }
+        });
+
+        // Authentication failed, return an error response
+        res.json({ success: false });
+    }).catch(error => {
+        console.error('Error during login:', error);
+        res.json({ success: false });
+    });
+});
 
 exports.app = functions.https.onRequest(app);
