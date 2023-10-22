@@ -48,11 +48,31 @@ app.get('/', (req, res) => {
 
 app.get('/login', (req, res) => {
     res.render('login', { title: 'OurSpace' });
+    const firestore = firebase.firestore();
+    const loginCollection = firestore.collection('Login Details');
+  
+    loginCollection.get()
+      .then(QuerySnapshot => {
+        const loginDetails = [];
+        QuerySnapshot.forEach(document => {
+          const data = document.data();
+          loginDetails.push({
+            username: data.Username,
+            password: data.Password,
+          });
+        });
+        res.json(loginDetails);
+      })
+      .catch(error => {
+        console.error('Error fetching data from Firestore:', error);
+        res.status(500).json({ error: 'Server error' });
+      });
 });
 
 app.get('/register', (req, res) => {
     res.render('register', { title: 'OurSpace' });
 });
+  
 
 app.get('/profile', (req, res) => {
 

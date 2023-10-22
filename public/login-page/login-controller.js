@@ -14,9 +14,8 @@ function bindEvents() {
 }
 
 function loginUser(event) {
-    var { QuerySnapshot } = require('@google-cloud/firestore');
-    var index = require('index.js');
-    event.preventDefault(); // Prevent the default form submission behavior
+    //var index = require('../../functions/index');
+    //event.preventDefault(); // Prevent the default form submission behavior
 
     const username = document.querySelector('#loginUsername').value;
     const password = document.querySelector('#loginPassword').value;
@@ -25,6 +24,7 @@ function loginUser(event) {
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const user = users.find(u => u.username === username && u.password === password);
 
+    const customerRef = db.collection("Login Details");
     if (user) {
         localStorage.setItem('currentUser', JSON.stringify(user));
         // Login successful, redirect to index.html
@@ -35,27 +35,43 @@ function loginUser(event) {
     }*/
 
     // Reference to "Login Details" collection in Firestore
+
     const customerRef = index.db.collection("Login Details");
-    if(){
-        console.debug("db collection notEmpty");
-    }
+    console.log("FIXMEPweaseaweqwdwqdwqd");
 
     // Query Firestore to check if the username and password match
-    customerRef.get().then((QuerySnapshot) => {
+    /*customerRef.get().then((QuerySnapshot) => {
         QuerySnapshot.forEach(document => {
             const data = document.data();
             const user = data.Username;
             const pass = data.Password;
-
-            if(user == username){
-                if(pass == password){
+            if(user === username){
+                if(pass === password){
                     window.location.href = '/';
                 }
             }else{
                 alert('Invalid username or password');
+                window.location.href = '/';
             }
         })
+    })*/
+
+    fetch('/api/login-data')
+    .then(response => response.json())
+    .then(data => {
+      // Process the data received from the server
+      data.forEach(item => {
+        if (item.username === username && item.password === password) {
+          window.location.href = '/';
+          return; // Exit the loop
+        }
+      });
+      // If no match was found, display an error message
+      alert('Invalid username or password');
     })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
 }
 
 // Call the function to display existing posts when the page loads
