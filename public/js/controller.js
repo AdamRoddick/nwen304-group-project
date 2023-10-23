@@ -234,8 +234,19 @@ function createCurrentUserObject() {
 function logoutUser() {
     const confirmed = confirm('Are you sure you want to log out?');
     if (confirmed) {
-        localStorage.removeItem('currentUser');
-        window.location.href = '/register';
+        // DELETE request to the server to delete the 'loggedUser' document
+        fetch('/delete-logged-user', { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) {
+                    // Document deleted successfully on the server
+                    window.location.href = '/login'; // Redirect the user
+                } else {
+                    console.error('Failed to delete the user on the server');
+                }
+            })
+            .catch(error => {
+                console.error('Error during the server request:', error);
+            });
     }
 }
 

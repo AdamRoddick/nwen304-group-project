@@ -135,9 +135,6 @@ app.post('/api/db', async (req, res) => {
 });
 
 app.get('/api/get-username', async (req, res) => {
-    // You need to have some way to identify the currently logged-in user, such as a session token or user ID.
-    // Assuming you have a variable to identify the user, replace 'userIdentifier' with the actual identifier.
-
     const userIdentifier = 'loggedUser';
 
     const userDoc = await db.collection('Users').doc(userIdentifier).get();
@@ -148,6 +145,24 @@ app.get('/api/get-username', async (req, res) => {
         res.json({ username });
     } else {
         res.json({ username: null }); 
+    }
+});
+
+app.delete('/delete-logged-user', async (req, res) => {
+    try {
+        // Reference to the 'Users' collection
+        const usersCollection = db.collection('Users');
+
+        // Reference to the 'loggedUser' document
+        const loggedUserDoc = usersCollection.doc('loggedUser');
+
+        // Delete the 'loggedUser' document
+        await loggedUserDoc.delete();
+
+        res.status(204).send(); // Send a 204 No Content response on successful deletion
+    } catch (error) {
+        console.error('Error deleting the document:', error);
+        res.status(500).json({ error: 'An error occurred while deleting the document' });
     }
 });
 
