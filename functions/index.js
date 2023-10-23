@@ -145,7 +145,7 @@ app.get('/protected', isLoggedIn, async (req, res) => {
 
         if (!querySnapshot.empty) {
             // User with the same 'Username' already exists
-            res.send('<script>alert("User already exists. Please log in with your Google display name as username and password is googlePassword!.")</script>');
+            res.send("User already exists. Please log in with your Google display name as username and password is googlePassword!.");
             res.redirect('/');
         } else {
             // Create a new user in Firestore
@@ -159,8 +159,8 @@ app.get('/protected', isLoggedIn, async (req, res) => {
             // Add the new user data to Firestore
             await usersCollection.add(userData);
 
-            res.send(`Hello! ${displayName}`);
-            res.send('<script>alert("User created! please login with your google displayname, and your password is googlePassword")</script>');
+            res.send(`Hello! ${displayName} "User created! please login with your google displayname, and your password is googlePassword"`);
+            res.redirect('/');
             
         }
     } catch (error) {
