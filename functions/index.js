@@ -166,6 +166,25 @@ app.delete('/delete-logged-user', async (req, res) => {
     }
 });
 
+app.post('/api/create-post', (req, res) => {
+    const postsCollection = db.collection('Posts');
+    const { title, text, user, time } = req.body;
 
+    const newPost = {
+        title,
+        text,
+        user,
+        time,
+    };
+
+    // Add the new post to Firestore
+    postsCollection.add(newPost)
+        .then((docRef) => {
+            return res.status(201).json({ message: 'Post created successfully', postId: docRef.id });
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: 'Error creating the post', error: error.message });
+        });
+});
 
 exports.app = functions.https.onRequest(app);

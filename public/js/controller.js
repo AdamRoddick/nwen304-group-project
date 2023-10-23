@@ -71,27 +71,50 @@ function addPost(event) {
 
     const title = document.querySelector('#post-title').value;
     const text = document.querySelector('#post-text').value;
-    const user = JSON.parse(localStorage.getItem('currentUser')).username;
-    const time = getCurrentTime();
-    const id = generateUniqueId();
-    const userId = JSON.parse(localStorage.getItem('currentUser')).id;
 
-    // Create a new post object
-    const newPost = new Post(id, user, title, text, time, userId);
+    getCurrentUser() // Fetch the user data asynchronously
+        .then(user => {
+            const time = getCurrentTime();
 
-    // Add the new post to the array
-    postOperations.add(newPost);
+            const postData = {
+                title,
+                text,
+                time,
+                user: user, // Use the entire user object
+            };
 
-    // Update the posts in localStorage
-    localStorage.setItem('posts', JSON.stringify(postOperations.posts));
+            fetch('/api/create-post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(postData),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Post created successfully, handle the response as needed
+                        return response.json();
+                    } else {
+                        console.error('Failed to create the post on the server');
+                    }
+                })
+                .then(data => {
+                    // Handle the response data, which may contain the newly created post ID, if needed
+                    console.log('New Post ID:', data.postId);
+                })
+                .catch(error => {
+                    console.error('Error during the server request:', error);
+                });
 
-    // Display the new post on the website
-    displayPost(newPost);
-
-    // Clear input fields
-    document.querySelector('#post-title').value = '';
-    document.querySelector('#post-text').value = '';
+            // Clear input fields
+            document.querySelector('#post-title').value = '';
+            document.querySelector('#post-text').value = '';
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
 }
+
 
 function displayPost(post) {
     const postList = document.querySelector('.post-list');
