@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const express = require('express');
 const app = express();
 const session = require('express-session');
+const cookie = require('cookie-session');
 const FireBaseStore = require('connect-session-firebase')(require(session));
 const http = require('http');
 const admin = require('firebase-admin');
@@ -37,6 +38,13 @@ const sessionConfig = {
     },
 };
 
+const cookieConfig = {
+    name: 'session',
+    keys: ['boogieWonderland'],
+    secure: true,
+    maxAge: 86400000 // 24 hours
+};
+
 app.use(session(sessionConfig));
 //app.use(express.json());
 
@@ -58,7 +66,37 @@ app.use(express.static(publicDirectoryPath));
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 
-// Define a route to handle requests for your home page
+// Define routes to handle requests for pages
+app.get('/login', (req, res) => {
+    res.render('login', { title: 'OurSpace' });
+});
+
+app.post('/login', (req, res) => {
+    // Check if the email and password match a user in Firebase
+    admin.auth().getUserByEmail(req.body.email)
+        .then((userRecord) => {
+            // Login successful, redirect to index.html
+            req.session.user = userRecord;
+            res.redirect('/');
+        })
+        .catch((error) => {
+            // Login failed, display error message
+            res.render('login', { title: 'OurSpace', error: error });
+        });
+});
+
+app.get('/logout', (req, res) => {
+    // destroys the session and will unset the req.session property
+    // security purposes
+    req.session.destroy();
+    res.redirect('/');
+});
+
+app.get('/register', (req, res) => {
+    res.render('register', { title: 'OurSpace' });
+});
+
+
 app.get('/', (req, res) => {
     if (req.session.user) { // if a user is logged in, pass user data to the view
         res.render('index', { title: 'OurSpace', user: req.session.user });
@@ -66,14 +104,5 @@ app.get('/', (req, res) => {
         res.render('index', { title: 'OurSpace' });
     }
 });
-
-app.get('/login', (req, res) => {
-    res.render('login', { title: 'OurSpace' });
-});
-
-app.get('/register', (req, res) => {
-    res.render('register', { title: 'OurSpace' });
-});
-
 
 exports.app = functions.https.onRequest(app);
