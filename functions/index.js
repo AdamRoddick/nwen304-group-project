@@ -126,12 +126,46 @@ app.get('/auth/failure', (req, res) => {
     res.send('Failed to authenticate..');
 });
 
-app.get('/protected', isLoggedIn, (req, res) => {
-    res.send(`Hello! ${req.user.displayName}`);
+app.get('/protected', isLoggedIn, async (req, res) => {
+    const displayName = req.user.displayName;
+    const password = 'googlePassword';
+    const latitude = 0;
+    const longitude = 0; 
+    const usersCollection = db.collection('Users');
+
+    try {
+        // Query the Firestore collection to find a user with the same 'Username'
+        const querySnapshot = await usersCollection.where('Username', '==', displayName).get();
+
+        if (!querySnapshot.empty) {
+            // User with the same 'Username' already exists
+            res.send('<script>alert("User already exists. Please log in with your Google display name as username and password is googlePassword!.")</script>');
+            res.redirect('/');
+        } else {
+            // Create a new user in Firestore
+            const userData = {
+                Username: displayName,
+                Password: password,
+                Latitude: latitude || 0,
+                Longitude: longitude || 0,
+            };
+
+            // Add the new user data to Firestore
+            await usersCollection.add(userData);
+
+            res.send(`Hello! ${displayName}`);
+            res.send('<script>alert("User created! please login with your google displayname, and your password is googlePassword")</script>');
+            
+        }
+    } catch (error) {
+        console.error('Error during user creation:', error);
+        res.status(500).send('Failed to create user in Firestore');
+    }
 });
 
 app.get('/logout/google', (req, res) => {
     req.logout();
+    req.session.destroy();
     res.send('Logged out of Google Auth');
 });
 
