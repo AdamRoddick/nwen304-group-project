@@ -57,7 +57,7 @@ const cookieConfig = {
     maxAge: 86400000 // 24 hours
 };
 
-app.use(session(sessionConfig));
+//app.use(session(sessionConfig));
 app.use(cookieSession(cookieConfig));
 
 app.use(cookieParser());
