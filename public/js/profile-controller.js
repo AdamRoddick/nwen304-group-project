@@ -15,7 +15,7 @@ function init() {
         .then(posts => {
             postOperations.posts = posts || [];
             console.log(posts);
-            displayExistingPosts();
+            //displayExistingPosts();
         })
         .catch(error => {
             console.error('Error fetching posts:', error);
