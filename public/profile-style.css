@@ -35,6 +35,7 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: 20px;
+    width: 600px;
 }
 
 /* New styles for a more modern look */
@@ -79,7 +80,7 @@ body {
 
 /* Make the middle column wider */
 .column.middle {
-    width: 800px;
+    width: 350px;
 }
 
 .column.left {
@@ -88,7 +89,7 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 350px;
+    width: 800px;
 }
 
 .column.right {
@@ -338,3 +339,26 @@ body {
     width: 250px;
     border-radius: 50%;
 }
+
+.post-content {
+    text-align: left;
+}
+
+.unfollow-button {
+    padding: 15px;
+    padding-left: 40px;
+    padding-right: 40px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }
+
+.unfollow-button:hover {
+    background-color: #555; /* darker shade of grey/black on hover */
+  }

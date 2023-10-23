@@ -27,7 +27,8 @@
             </div>
             <div class="form-group">
                 <label for="registerPassword">Password:</label>
-                <input type="password" id="registerPassword" name="registerPassword" required>
+                <input type="password" id="registerPassword" name="registerPassword" required oninput="checkPasswordComplexity(this)">
+                <span id="registerPasswordStrength"></span>
             </div>
             <div class="form-group">
                 <label for="confirmPassword">Confirm Password:</label>

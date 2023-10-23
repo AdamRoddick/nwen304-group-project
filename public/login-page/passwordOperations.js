@@ -2,7 +2,7 @@ const passwordOperations = {
 
     evaluateRequirements(password) {
         // Minimum Password Length
-        const minLength = 8;
+        const minLength = 6;
         // Contains variables to check if the password contains at least one character from each category
         const contUpperCase = /[A-Z]/;
         const contLowerCase = /[a-z]/;
@@ -11,6 +11,11 @@ const passwordOperations = {
 
         // boolean for switch case
         let meetsRequirements = true;
+
+        //exceptions for password requirements (temporary) to speed up testing
+        if (password === "test" || password === "1") {
+            return true;
+        }
 
         switch (meetsRequirements) {
             case password.length < minLength: // Minimum length doesn't meet requirement
@@ -22,20 +27,20 @@ const passwordOperations = {
                 break;
             default:
                 console.log("Password meets requirements");
+                meetsRequirements = true;
                 break;
         }
         return meetsRequirements;
     },
 
     checkRequirements(password) {
-        if (!evaluateRequirements(password)) {
-            return "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one symbol";
+        if (!this.evaluateRequirements(password)) {
+            return "Password must contain at least 6 characters, one uppercase letter, one lowercase letter, one number and one symbol";
         }
         return "";
     },
 
     evaluatePassword(password) {
-        
         // fields to measure strength
         var strength = 0;
         var variations = 0;
@@ -45,56 +50,53 @@ const passwordOperations = {
         const symbols = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
 
         // case there is no password
-        if(password == null){
+        if (password == null) {
             return strength;
         }
 
-        if (evaluateRequirements(password)) {
 
-            let requirementVariation = {
-                casesUpper: upperCase.test(password),
-                casesLower: lowerCase.test(password),
-                digitsUsed: numbers.test(password),
-                symbolsUsed: symbols.test(password) 
-            }
-
-            for (let i in requirementVariation) {
-                variations += (requirementVariation[i] == true) ? 1 : 0;
-            }
-
-            strength +=  (variations - 1) * 10; // 10 points for each variation (max 40)
-
-            // Increase strength level for every unique letter until 5 repetitions
-            let evalPassword = new Object();
-            for (let i = 0; i < password.length; i++) {
-                // Increments the count of the letter in the object
-                // If the letter has not been encountered, starts with 0
-                evalPassword[password[i]] = (evalPassword[password[i]] || 0) + 1; // checks whether the letter has been encountered before
-                // strength increases by 5 divided by the number of times the letter has been encountered
-                strength += 5.0 / evalPassword[password[i]]; 
-            }
+        let requirementVariation = {
+            casesUpper: upperCase.test(password),
+            casesLower: lowerCase.test(password),
+            digitsUsed: numbers.test(password),
+            symbolsUsed: symbols.test(password)
         }
 
+        for (let i in requirementVariation) {
+            variations += (requirementVariation[i] == true) ? 1 : 0;
+        }
+
+        strength += (variations - 1) * 10; // 10 points for each variation (max 40)
+
+        // Increase strength level for every unique letter until 5 repetitions
+        let evalPassword = new Object();
+        for (let i = 0; i < password.length; i++) {
+            // Increments the count of the letter in the object
+            // If the letter has not been encountered, starts with 0
+            evalPassword[password[i]] = (evalPassword[password[i]] || 0) + 1; // checks whether the letter has been encountered before
+            // strength increases by 5 divided by the number of times the letter has been encountered
+            strength += 5.0 / evalPassword[password[i]];
+        }
         return parseInt(strength);
     },
 
     checkComplexity(password) {
-        let strength = evaluatePassword(password);
-        if (strength > 80) {
+        let strength = this.evaluatePassword(password);
+        if (strength > 70) {
             return "strong";
         }
 
-        if (strength > 60) {
+        if (strength > 50) {
             return "okay";
         }
 
-        if (strength > 40) {
+        if (strength > 30) {
             return "weak";
         }
 
-        if (strength >= 20) {
+        if (strength <= 10) {
             return "very weak";
         }
-        return "";
+        return "terrible";
     },
 }

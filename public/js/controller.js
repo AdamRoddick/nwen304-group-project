@@ -1,4 +1,27 @@
-window.addEventListener("load", init);
+let inactivityTimeout;
+const timeoutTime = 1800000; //30 minute minute timeout (1,800,000ms)
+
+window.addEventListener("load", function () {
+    inactivityTimeout = setTimeout(redirectToLogin, timeoutTime);
+
+    // Add event listeners to reset the timer on user activity
+    document.addEventListener("mousemove", resetInactivityTimeout);
+    document.addEventListener("keydown", resetInactivityTimeout);
+
+    init();
+});
+
+function resetInactivityTimeout() {
+    // Reset the inactivity timer whenever there is user activity
+    clearTimeout(inactivityTimeout);
+    inactivityTimeout = setTimeout(redirectToLogin, timeoutTime);
+}
+
+function redirectToLogin() {
+    window.location.href = '/login';
+    localStorage.removeItem('currentUser');
+}
+
 
 function init() {
     bindEvents();
@@ -19,6 +42,7 @@ function bindEvents() {
     document.querySelector('#post-button').addEventListener('click', addPost);
     document.querySelector('#logout-button').addEventListener('click', logoutUser);
     document.querySelector('#login-button').addEventListener('click', loginUser);
+    document.querySelector('#profile-button').addEventListener('click', gotoProfile);
 }
 
 function addPost(event) {
@@ -29,9 +53,10 @@ function addPost(event) {
     const user = JSON.parse(localStorage.getItem('currentUser')).username;
     const time = getCurrentTime();
     const id = generateUniqueId();
+    const userId = JSON.parse(localStorage.getItem('currentUser')).id;
 
     // Create a new post object
-    const newPost = new Post(id, user, title, text, time);
+    const newPost = new Post(id, user, title, text, time, userId);
 
     // Add the new post to the array
     postOperations.add(newPost);
@@ -73,6 +98,26 @@ function displayPost(post) {
     postList.appendChild(postElement);
 }
 
+function displayUser(user) {
+    const userList = document.querySelector('.recommended-users');
+
+    const postElement = document.createElement('div');
+    postElement.classList.add('user');
+
+    postElement.innerHTML = `
+        <div class="recommended-user-profile">
+            <img src="images/default-avatar.jpg" alt="Profile Picture" class="profile-picture">
+            <div class="recommended-profile-text">
+                <h4 id="recommended-profile-username-${user.username}">${user.username}</h4>
+            </div>
+            <button class="recommended-user-follow-button" id="follow-button-${user.username}">Follow</button>
+        </div>
+    `;
+
+    userList.appendChild(postElement);
+}
+
+
 // Function to initialize and display existing posts
 function displayExistingPosts() {
     const postList = document.querySelector('.post-list');
@@ -83,10 +128,28 @@ function displayExistingPosts() {
     }
 }
 
+// Function to initialize and display recommended users
+function displayRecommendedUsers() {
+    const userList = document.querySelector('.recommended-users');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    for (const user of userOperations.users) {
+        if (user.id !== currentUser.id && !followsUser(currentUser, user)) {
+            displayUser(user);
+
+            // Add an event listener to the "Follow" button for each recommended user
+            const followButton = document.getElementById(`follow-button-${user.username}`);
+            followButton.addEventListener('click', () => followUser(currentUser, user));
+        }
+    }
+}
+
+
 // Call the function to display existing posts when the page loads
 window.addEventListener("load", () => {
     init();
     displayExistingPosts();
+    displayRecommendedUsers();
 });
 
 function getCurrentTime() {
@@ -189,3 +252,51 @@ function checkCurrentUser() {
       createPost.style.display = 'none';
     }
   }
+
+  function followUser(currentUser, userToFollow) {
+    // Add the userToFollow to the currentUser's following list
+    currentUser.following.push(userToFollow);
+
+    // Update the following list in localStorage
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // Update the button text to show that the user is now following
+    const followButton = document.getElementById(`follow-button-${userToFollow.username}`);
+    followButton.textContent = 'Following';
+    followButton.disabled = true; // Optionally, disable the button to prevent multiple follows
+
+    pushCurrentUser();
+}
+
+//ensure that the user in currentUser has the same properties as itself in other places (users list)
+function pushCurrentUser() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    for (const user of userOperations.users) {
+        if (user.id === currentUser.id) {
+            updateUsers(user.id, currentUser);
+        }
+    }
+}
+
+function updateUsers(userId, newUser) {
+    const userIndex = userOperations.users.findIndex(user => user.id === userId);
+    if (userIndex !== -1) {
+        console.log("test");
+        userOperations.users[userIndex] = newUser;
+        localStorage.setItem('users', JSON.stringify(userOperations.users));
+    }
+  }
+
+function followsUser(user1, user2) {
+    for (const user of user1.following) {
+        if (user.id === user2.id) {
+            console.log(user.id + " : " + user2.id);
+            return true;
+        }
+    }
+    return false;
+}
+
+function gotoProfile() {
+    window.location.href = '/profile';
+}

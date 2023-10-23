@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/profile-style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Noto+Sans">
+
+    <script src="/js/post.js"></script>
+    <script src="/js/postoperations.js"></script>
+    <script src="/js/profile-controller.js"></script>
+    <script src="/js/user.js"></script>
+    <script src="/js/useroperations.js"></script>
+
+</head>
+<body>
+    <div class="header">
+        <a href="/" id="title"><%= title %></a>
+    </div>
+    <div class="profile-top">
+        <img src="/images/default-avatar.jpg" alt="Profile Picture" class="profile-picture-large">
+        <h1 class="profile-info-item"><%= username %></h1>
+        <!-- The followers and following total count for this user-->
+        <h2 class="profile-info-item">Followers:</h2>
+        <h2 class="profile-info-item">Following:</h2>
+        <h2 class="profile-info-item"></h2>
+    </div>
+
+    <div class="container">
+        <div class="column left">
+            <h2>Your Posts</h2>
+            <div class="post-list">
+                <!-- Posts will be dynamically added here -->
+            </div>
+        </div>
+        <div class="column middle">
+            <h2>Followers</h2>
+            <div class="followers-users">
+                <!-- Users will be dynamically added here -->
+            </div>
+        </div>
+        <div class="column right">
+            <h2>Following</h2>
+            <div class="following-users">
+                <!-- Users will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

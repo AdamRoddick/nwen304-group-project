@@ -119,6 +119,16 @@ app.get('/register', (req, res) => {
     res.render('register', { title: 'OurSpace' });
 });
 
+app.get('/profile', (req, res) => {
+
+    // Retrieve the username from local storage
+
+    res.render('profile', {
+        title: 'OurSpace',
+        username: 'Username' //Database should fetch the actual username and other stuff
+    });
+});
+
 
 app.get('/', (req, res) => {
     if (req.session.user) { // if a user is logged in, pass user data to the view
