@@ -18,20 +18,70 @@ function resetInactivityTimeout() {
 }
 
 function redirectToLogin() {
-    window.location.href = '/login';
-    localStorage.removeItem('currentUser');
+    fetch('/delete-logged-user', { method: 'DELETE' })
+        .then(response => {
+            if (response.ok) {
+                // Document deleted successfully on the server
+                window.location.href = '/login'; // Redirect the user
+            } else {
+                console.error('Failed to delete the user on the server');
+            }
+        })
+        .catch(error => {
+            console.error('Error during the server request:', error);
+        });
 }
+
+function getCurrentUser() {
+    return fetch('/api/get-username')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        });
+}
+
 
 
 function init() {
     bindEvents();
 
-    // Initialize the postOperations.posts array with posts from localStorage
-    postOperations.posts = JSON.parse(localStorage.getItem('posts')) || [];
+    // Initialize the postOperations.posts array with posts from Firestore
+    fetch('/api/get-posts')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+            return response.json();
+        })
+        .then(posts => {
+            postOperations.posts = posts || [];
+            console.log(posts);
+            displayExistingPosts();
+        })
+        .catch(error => {
+            console.error('Error fetching posts:', error);
+        });
 
-    // Initialize the postOperations.posts array with posts from localStorage
-    userOperations.user = JSON.parse(localStorage.getItem('users')) || [];
+    // Initialize the postOperations.posts array with posts from Firestore
+    // Fetch user data from Firestore, excluding 'loggedUser'
+    fetch('/api/get-users')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        })
+        .then(users => {
+            userOperations.users = users || []; // Initialize with retrieved user data or an empty array
+            console.log(users);
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
 
+    //displayRecommendedUsers();
     displaySideProfileUSername();
     checkCurrentUser();
 }
@@ -50,27 +100,63 @@ function addPost(event) {
 
     const title = document.querySelector('#post-title').value;
     const text = document.querySelector('#post-text').value;
-    const user = JSON.parse(localStorage.getItem('currentUser')).username;
-    const time = getCurrentTime();
-    const id = generateUniqueId();
-    const userId = JSON.parse(localStorage.getItem('currentUser')).id;
 
-    // Create a new post object
-    const newPost = new Post(id, user, title, text, time, userId);
+    getCurrentUser() // Fetch the user data asynchronously
+        .then(user => {
+            const time = getCurrentTime();
 
-    // Add the new post to the array
-    postOperations.add(newPost);
+            const postData = {
+                title,
+                text,
+                time,
+                user: user, // Use the entire user object
+            };
 
-    // Update the posts in localStorage
-    localStorage.setItem('posts', JSON.stringify(postOperations.posts));
+            fetch('/api/create-post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(postData),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Post created successfully, handle the response as needed
+                        return response.json();
+                    } else {
+                        console.error('Failed to create the post on the server');
+                    }
+                })
+                .then(data => {
+                    // Handle the response data, which may contain the newly created post ID, if needed
+                    console.log('New Post ID:', data.postId);
+                    postOperations.posts.push({
+                        title,
+                        text,
+                        user: user,
+                        time,
+                    });
+                    // Call displayPost and pass the post object
+                    displayPost({
+                        title,
+                        text,
+                        user: user,
+                        time,
+                    });
+                })
+                .catch(error => {
+                    console.error('Error during the server request:', error);
+                });
 
-    // Display the new post on the website
-    displayPost(newPost);
-
-    // Clear input fields
-    document.querySelector('#post-title').value = '';
-    document.querySelector('#post-text').value = '';
+            // Clear input fields
+            document.querySelector('#post-title').value = '';
+            document.querySelector('#post-text').value = '';
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
 }
+
 
 function displayPost(post) {
     const postList = document.querySelector('.post-list');
@@ -79,13 +165,17 @@ function displayPost(post) {
     const postElement = document.createElement('div');
     postElement.classList.add('post');
 
-    // Construct the post HTML structure
+    // Extract the user and time from the post object
+    const user = post.user.username; // Get the username from the user object in the post
+    const time = post.time;
+
+    // Construct the post HTML structure with user and time
     postElement.innerHTML = `
         <div class="post-header">
             <img src="images/default-avatar.jpg" alt="User Profile Picture" class="post-profile-picture">
             <div class="post-header-info">
-                <h3 class="post-username">${post.user}</h3>
-                <p class="post-time">${post.time}</p>
+                <h3 class="post-username">${user}</h3>
+                <p class="post-time">${time}</p>
             </div>
         </div>
         <div class="post-content">
@@ -97,6 +187,7 @@ function displayPost(post) {
     // Add the new post to the post list
     postList.appendChild(postElement);
 }
+
 
 function displayUser(user) {
     const userList = document.querySelector('.recommended-users');
@@ -130,25 +221,35 @@ function displayExistingPosts() {
 
 // Function to initialize and display recommended users
 function displayRecommendedUsers() {
-    const userList = document.querySelector('.recommended-users');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    getCurrentUser()
+        .then(currentUser => {
+            const userList = document.querySelector('.recommended-users');
 
-    for (const user of userOperations.users) {
-        if (user.id !== currentUser.id && !followsUser(currentUser, user)) {
-            displayUser(user);
+            // Filter out users who don't match the current user (by username)
+            //only recommend the 5 most recently created users (Users at a similar time)
+            const nonMatchingUsers = userOperations.users.filter(user => user !== currentUser.username).slice(-5);
 
-            // Add an event listener to the "Follow" button for each recommended user
-            const followButton = document.getElementById(`follow-button-${user.username}`);
-            followButton.addEventListener('click', () => followUser(currentUser, user));
-        }
-    }
+            // Display the filtered list of users
+            for (const username of nonMatchingUsers) {
+                const user = { username }; // Create a user object with the username
+                displayUser(user);
+
+                // Add an event listener to the "Follow" button for each recommended user
+                const followButton = document.getElementById(`follow-button-${username}`);
+                followButton.addEventListener('click', () => followUser(currentUser, user));
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching current user data:', error);
+        });
 }
+
 
 
 // Call the function to display existing posts when the page loads
 window.addEventListener("load", () => {
-    init();
-    displayExistingPosts();
+    //init();
+    //displayExistingPosts();
     displayRecommendedUsers();
 });
 
@@ -176,60 +277,66 @@ function generateUniqueId() {
 }
 
 function displaySideProfileUSername() {
-    const userDetails = JSON.parse(localStorage.getItem('currentUser'));
-    // const userDetails = sessionStorage.getItem('currentUser');
-    if (userDetails) {
-        document.getElementById('side-profile-username').textContent = userDetails.username;
-        document.getElementById('side-profile-status').textContent = userDetails.status;
-        //document.getElementById('side-profile-email').textContent = userDetails.status;
-    }
-}
-
-/**
- * Function to fetch user data from the database
- * 
- * @param {*} user 
- * @returns 
- */
-function fetchUserData(user){
-    const endPoint = '' + user; // replace '' with database being used
-
-    return fetch(endPoint).then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-        }
-        return response.json();
+     fetch('/api/get-username')
+    .then(response => response.json()) // Parse the response JSON
+    .then(data => {
+      if (data.username) {
+       
+        // Now, userDetails is a JavaScript object containing the user data
+        // Set the username in your 'side-profile-username' element
+        document.getElementById('side-profile-username').textContent = data.username;
+      } else {
+        console.error('User not found');
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching user data:', error);
     });
 }
 
+function createCurrentUserObject() {
+    // Replace this URL with the actual endpoint URL
+    const endpointUrl = '/api/get-username';
 
-/**
- * Function to display the user's profile in the side bar
- * Will need to be fixed
- */
-function displaySideProfle() {
-    const userDetails = getCurrentUser();
+    fetch(endpointUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text(); // Retrieve the response as text
+        })
+        .then((data) => {
+            try {
+                // Parse the received string into a JSON object
+                const jsonObject = JSON.parse(data);
 
-    if (userDetails) {
-        fetchUserData(userDetails.username).then((userData) => {
-            document.getElementById('side-profile-username').textContent = userData.username;
-            document.getElementById('side-profile-status').textContent = userData.status;
+                // 'jsonObject' now contains the JSON data
+                return jsonObject;
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
         });
-    }
-}
-
-// Function to get the current user from localStorage
-// Will need to be fixed
-function getCurrentUser() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    return currentUser;
 }
 
 function logoutUser() {
     const confirmed = confirm('Are you sure you want to log out?');
     if (confirmed) {
-        localStorage.removeItem('currentUser');
-        window.location.href = '/logout';
+        // DELETE request to the server to delete the 'loggedUser' document
+        fetch('/delete-logged-user', { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) {
+                    // Document deleted successfully on the server
+                    window.location.href = '/login'; // Redirect the user
+                } else {
+                    console.error('Failed to delete the user on the server');
+                }
+            })
+            .catch(error => {
+                console.error('Error during the server request:', error);
+            });
     }
 }
 
@@ -238,19 +345,24 @@ function loginUser() {
 }
 
 function checkCurrentUser() {
-    const currentUser = localStorage.getItem('currentUser');
-    const logoutBtn = document.getElementById('logout-button');
-    const loginBtn = document.getElementById('login-button');
-    const createPost = document.getElementById('create-post');
-    if (currentUser) {
-      logoutBtn.style.display = 'block';
-      loginBtn.style.display = 'none';
-      createPost.style.display = 'block';
-    } else {
-      logoutBtn.style.display = 'none';
-      loginBtn.style.display = 'block';
-      createPost.style.display = 'none';
-    }
+    getCurrentUser().then(user => {
+        const sideProfileUsername = document.getElementById('side-profile-username');
+        const logoutBtn = document.getElementById('logout-button');
+        const loginBtn = document.getElementById('login-button');
+        const createPost = document.getElementById('create-post');
+
+        if (user && user.username) {
+            sideProfileUsername.textContent = user.username;
+            logoutBtn.style.display = 'block';
+            loginBtn.style.display = 'none';
+            createPost.style.display = 'block';
+        } else {
+            sideProfileUsername.textContent = 'Guest';
+            logoutBtn.style.display = 'none';
+            loginBtn.style.display = 'block';
+            createPost.style.display = 'none';
+        }
+    });
   }
 
   function followUser(currentUser, userToFollow) {

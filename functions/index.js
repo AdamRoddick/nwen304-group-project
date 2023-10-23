@@ -1,115 +1,51 @@
-// Main routing points
 const functions = require('firebase-functions');
 const express = require('express');
+const cors = require('cors');
 const app = express();
+const session = require('express-session');
 const path = require('path');
 const ejs = require('ejs');
+// Require the Firebase Admin setup from the firebaseAdmin.js file
+const admin = require('./firebaseAdmin');
+const passport = require('passport');
 
-// Cookies and Sessions
-const session = require('express-session');
-const cookieSession = require('cookie-session');
-const cookieParser = require('cookie-parser');
-
-// Firebase
-//const FireBaseStore = require('connect-session-firebase')(require(session));
-const admin = require('firebase-admin');
-const serviceAccount = require('./serviceAccountKey.json')
-
-// Configure Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyAcL_a8tS4bvMXFAr6oHJcWHkyjVFiYzb4",
-    authDomain: "nwen304-groupproject-9db15.firebaseapp.com",
-    databaseURL: "https://nwen304-groupproject-9db15-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "nwen304-groupproject-9db15",
-    storageBucket: "nwen304-groupproject-9db15.appspot.com",
-    messagingSenderId: "780741013383",
-    appId: "1:780741013383:web:d216a031f2cccbddc22d22",
-    measurementId: "G-TCLDG0Y66G"
-};
-
-// Initialise Firebase and ServiceAccount registration
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: firebaseConfig.databaseURL
-})
-
-app.use(express.urlencoded({ extended: false }));
-
-// Configure the session and cookie
-const sessionConfig = {
-    database: admin.database(),
-    secret: 'boogieWonderland',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { 
-        sessionID: 'session',
-        secure: true,
-        maxAge: 86400000 // 24 hours
-    }
-};
-
-const cookieConfig = {
-    name: 'session',
-    keys: ['boogieWonderland'],
-    resave: false,
-    saveUnintialized: true,
-    secure: true,
-    maxAge: 86400000 // 24 hours
-};
-
-//app.use(session(sessionConfig));
-app.use(cookieSession(cookieConfig));
-
-app.use(cookieParser());
-//app.use(express.json());
-
-//Extending the session expiration time on each request
-app.use((req, res, next) => {
-    const session = req.session;
-    if (session) {
-        session.nowInMinutes = Math.floor(Date.now() / 60e3); //every minute
-    }
-    next();
-});
-
-//const sessions = require('express-session');
-const { initializeApp } = require('firebase-admin/app');
+// Firestore database reference
+const db = admin.firestore();
 
 const port = process.env.PORT || 3000; // Use the specified port or 3000 by default
 
 // Define the path to your static files (CSS, JavaScript, images, etc.)
 const publicDirectoryPath = path.join(__dirname, '/public');
 
+require('./auth');
+app.use(session({
+    secret: 'cats',
+    resave: false,             // Add this line
+    saveUninitialized: false,  // Add this line
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 // Serve static files from the 'public' directory
 app.use(express.static(publicDirectoryPath));
+
+//to use body parts
+app.use(express.json());
+
+//to use cors for frontend framework
+app.use(cors());
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 
-// Define routes to handle requests for pages
-app.get('/login', (req, res) => {
+// Define a route to handle requests for your home page
+app.get('/', (req, res) => {
+    res.render('index', { title: 'OurSpace' });
+});
+
+app.get('/login', async(req, res) => {
     res.render('login', { title: 'OurSpace' });
-});
-
-app.post('/login', (req, res) => {
-    // Check if the email and password match a user in Firebase
-    admin.auth().getUserByEmail(req.body.email)
-        .then((userRecord) => {
-            // Login successful, redirect to index.html
-            req.session.user = userRecord;
-            res.redirect('/');
-        })
-        .catch((error) => {
-            // Login failed, display error message
-            res.render('login', { title: 'OurSpace', error: error });
-        });
-});
-
-app.get('/logout', (req, res) => {
-    // destroys the session and will unset the req.session property
-    // security purposes
-    req.session = null;
-    res.redirect('/');
 });
 
 app.get('/register', (req, res) => {
@@ -117,22 +53,300 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/profile', (req, res) => {
-
     // Retrieve the username from local storage
-
     res.render('profile', {
         title: 'OurSpace',
-        username: 'Username' //Database should fetch the actual username and other stuff
+        username: fetch('/api/get-username')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        }) //Database should fetch the actual username and other stuff
     });
 });
 
 
-app.get('/', (req, res) => {
-    if (req.session.user) { // if a user is logged in, pass user data to the view
-        res.render('index', { title: 'OurSpace', user: req.session.user });
-    } else {
-        res.render('index', { title: 'OurSpace' });
+// Define the login route to handle authentication(WORKING!!!!!!!!!!)
+app.post('/api/login', (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const customerRef = db.collection('Users');
+    const loggedUserRef = db.collection('Users').doc('loggedUser'); // Specify the document ID
+
+    customerRef.get()
+        .then((querySnapshot) => {
+            let authenticated = false;
+
+            querySnapshot.forEach((document) => {
+                const data = document.data();
+                if (data.Username === username && data.Password === password) {
+                    // Authentication successful, return a success response
+                    authenticated = true;
+                    res.json({ success: true });
+
+                    // Create a new document in Firestore for the logged-in user
+                    loggedUserRef.set({
+                        Username: username,
+                        Password: password
+                    })
+                        .then(() => {
+                            console.log('Logged-in user added to Firestore');
+                        })
+                        .catch((error) => {
+                            console.error('Error adding logged-in user to Firestore:', error);
+                        });
+                }
+            });
+
+            if (!authenticated) {
+                // Authentication failed, return an error response
+                res.json({ success: false });
+            }
+        })
+        .catch((error) => {
+            console.error('Error during login:', error);
+            res.json({ success: false });
+        });
+});
+
+function isLoggedIn(req, res, next) {
+    req.user ? next() : res.sendStatus(401);
+}
+
+app.get('/auth/google',
+    passport.authenticate('google', {
+        scope:
+            ['email', 'profile']
     }
+    ));
+
+app.get('/auth/google/callback',
+    passport.authenticate('google', {
+        successRedirect: '/protected',
+        failureRedirect: '/auth/failure'
+    }));
+
+app.get('/auth/failure', (req, res) => {
+    res.send('Failed to authenticate..');
+});
+
+app.get('/protected', isLoggedIn, async (req, res) => {
+    const displayName = req.user.displayName;
+    const password = 'googlePassword';
+    const latitude = 0;
+    const longitude = 0; 
+    const usersCollection = db.collection('Users');
+
+    try {
+        // Query the Firestore collection to find a user with the same 'Username'
+        const querySnapshot = await usersCollection.where('Username', '==', displayName).get();
+
+        if (!querySnapshot.empty) {
+            // User with the same 'Username' already exists
+            res.send("User already exists. Please log in with your Google display name as username and password is googlePassword!.");
+            res.redirect('/');
+        } else {
+            // Create a new user in Firestore
+            const userData = {
+                Username: displayName,
+                Password: password,
+                Latitude: latitude || 0,
+                Longitude: longitude || 0,
+            };
+
+            // Add the new user data to Firestore
+            await usersCollection.add(userData);
+
+            res.send(`Hello! ${displayName} "User created! please login with your google displayname, and your password is googlePassword"`);
+            res.redirect('/');
+            
+        }
+    } catch (error) {
+        console.error('Error during user creation:', error);
+        res.status(500).send('Failed to create user in Firestore');
+    }
+});
+
+app.get('/logout/google', (req, res) => {
+    req.logout();
+    req.session.destroy();
+    res.send('Logged out of Google Auth');
+});
+
+app.post('/api/register', async (req, res) => {
+    // Handle user authentication here, using Firebase Admin
+    const username = req.body.username;
+    const password = req.body.password;
+    const email = req.body.email;
+
+    const addData = {
+        Username: username,
+        Password: password,
+        Email: email,
+        Latitude: 0,
+        Longitude: 0,
+    }
+    const customerRef = db.collection("Users");
+
+    try {
+        const response = await db.collection("Users").add(addData);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error during registration:', error);
+        res.json({ success: false });
+    }
+});
+
+app.post('/api/db', async (req, res) => {
+    try {
+        const userRef = db.collection('Users').doc('loggedUser'); // Specify the document ID
+        const userDoc = await userRef.get();
+
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            const username = userData.Username;
+            res.json({ success: true, username });
+        } else {
+            res.json({ success: false, message: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error retrieving user data from Firestore:', error);
+        res.json({ success: false, message: 'An error occurred' });
+    }
+});
+
+app.get('/api/get-username', async (req, res) => {
+    const userIdentifier = 'loggedUser';
+
+    const userDoc = await db.collection('Users').doc(userIdentifier).get();
+
+    if (userDoc.exists) {
+        const userData = userDoc.data();
+        const username = userData.Username;
+        res.json({ username });
+    } else {
+        res.json({ username: null }); 
+    }
+});
+
+app.get('/api/get-longtitude-latitude', async (req, res) => {
+    const userIdentifier = 'loggedUser';
+
+    const userDoc = await db.collection('Users').doc(userIdentifier).get();
+
+    if (userDoc.exists) {
+        const userData = userDoc.data();
+        const long = userData.Longitude;
+        const lat = userData.Latitude;
+        res.json({ username });
+    } else {
+        res.json({ username: null });
+    }
+});
+
+app.put('/api/update-longitude-latitude', async (req, res) => {
+    const userIdentifier = 'loggedUser'; 
+
+    // Extract the new longitude and latitude values from the request body
+    const { longitude, latitude } = req.body;
+
+    // Update the Firestore document with the new longitude and latitude
+    const userDocRef = db.collection('Users').doc(userIdentifier);
+
+    try {
+        await userDocRef.set({
+            Longitude: longitude,
+            Latitude: latitude
+        }, { merge: true });
+
+        res.json({ success: true, message: 'Longitude and Latitude updated successfully' });
+    } catch (error) {
+        console.error('Error updating Longitude and Latitude:', error);
+        res.status(500).json({ success: false, message: 'Failed to update Longitude and Latitude' });
+    }
+});
+
+app.delete('/delete-logged-user', async (req, res) => {
+    try {
+        // Reference to the 'Users' collection
+        const usersCollection = db.collection('Users');
+
+        // Reference to the 'loggedUser' document
+        const loggedUserDoc = usersCollection.doc('loggedUser');
+
+        // Delete the 'loggedUser' document
+        await loggedUserDoc.delete();
+
+        res.status(204).send(); // Send a 204 No Content response on successful deletion
+    } catch (error) {
+        console.error('Error deleting the document:', error);
+        res.status(500).json({ error: 'An error occurred while deleting the document' });
+    }
+});
+
+app.get('/api/get-posts', async (req, res) => {
+    try {
+        const postsCollection = db.collection('Posts');
+        const postsQuerySnapshot = await postsCollection.get();
+
+        const posts = [];
+        postsQuerySnapshot.forEach((doc) => {
+            const post = doc.data();
+            posts.push(post);
+        });
+
+        res.json(posts);
+    } catch (error) {
+        console.error('Error getting posts:', error);
+        res.status(500).json({ error: 'An error occurred while fetching posts' });
+    }
+});
+
+app.get('/api/get-users', async (req, res) => {
+    try {
+        const usersCollection = db.collection('Users');
+        const querySnapshot = await usersCollection.get();
+        const users = [];
+
+        querySnapshot.forEach((doc) => {
+            if (doc.id !== 'loggedUser') {
+                const userData = doc.data();
+                users.push(userData.Username);
+            }
+        });
+
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).json({ message: 'An error occurred' });
+    }
+});
+
+app.post('/api/create-post', (req, res) => {
+    const postsCollection = db.collection('Posts');
+    const { title, text, user, time} = req.body;
+
+    if (!title || !text || !user || !time) {
+        return res.status(400).json({ message: 'Missing required data' });
+    }
+
+    const newPost = {
+        title,
+        text,
+        user,
+        time,
+    };
+
+    // Add the new post to Firestore
+    postsCollection.add(newPost)
+        .then((docRef) => {
+            return res.status(201).json({ message: 'Post created successfully', postId: docRef.id });
+        })
+        .catch((error) => {
+            return res.status(500).json({ message: 'Error creating the post', error: error.message });
+        });
 });
 
 exports.app = functions.https.onRequest(app);

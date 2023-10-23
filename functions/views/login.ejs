@@ -11,6 +11,8 @@
     <script src="../login-page/login-controller.js"></script>
     <script src="../js/user.js"></script>
     <script src="../js/useroperations.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-firestore.js"></script>
 </head>
 <body>
     <div class="container">
@@ -26,6 +28,7 @@
             </div>
             <button type="submit">Login</button>
             <button onclick="location.href='/register'" class="secondary-button">Dont have an account? Register here</button>
+            <button onclick="location.href='/auth/google'" class="secondary-button">Sign in with Google</button>
             <button onclick="location.href='/'" class="secondary-button">View as guest</button>
         </form>
     </div>
