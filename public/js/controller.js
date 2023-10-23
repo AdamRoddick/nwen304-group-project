@@ -176,10 +176,19 @@ function generateUniqueId() {
 }
 
 function displaySideProfileUSername() {
-    const userDetails = JSON.parse(localStorage.getItem('currentUser'));
-    if (userDetails) {
-        document.getElementById('side-profile-username').textContent = userDetails.username;
-    }
+    fetch('/api/get-username')
+        .then(response => response.json())
+        .then(data => {
+            if (data.username) {
+                document.getElementById('side-profile-username').textContent = data.username;
+            } else {
+                // Handle the case where the username is not found, e.g., display a default value.
+                document.getElementById('side-profile-username').textContent = 'Guest';
+            }
+        })
+        .catch(error => {
+            console.error('Error while fetching username:', error);
+        });
 }
 
 function logoutUser() {

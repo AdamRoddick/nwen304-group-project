@@ -50,30 +50,48 @@ app.get('/profile', (req, res) => {
 });
 
 
-// Define the login route to handle authentication
+// Define the login route to handle authentication(WORKING!!!!!!!!!!)
 app.post('/api/login', (req, res) => {
-    // Handle user authentication here, using Firebase Admin
     const username = req.body.username;
     const password = req.body.password;
 
-    const customerRef = db.collection("Users");
+    const customerRef = db.collection('Users');
+    const loggedUserRef = db.collection('Users').doc('loggedUser'); // Specify the document ID
 
-    customerRef.get().then((QuerySnapshot) => {
-        QuerySnapshot.forEach(document => {
-            const data = document.data();
-            if (data.Username === username && data.Password === password) {
-                // Authentication successful, return a success response
-                res.json({ success: true });
-                return;
+    customerRef.get()
+        .then((querySnapshot) => {
+            let authenticated = false;
+
+            querySnapshot.forEach((document) => {
+                const data = document.data();
+                if (data.Username === username && data.Password === password) {
+                    // Authentication successful, return a success response
+                    authenticated = true;
+                    res.json({ success: true });
+
+                    // Create a new document in Firestore for the logged-in user
+                    loggedUserRef.set({
+                        Username: username,
+                        Password: password
+                    })
+                        .then(() => {
+                            console.log('Logged-in user added to Firestore');
+                        })
+                        .catch((error) => {
+                            console.error('Error adding logged-in user to Firestore:', error);
+                        });
+                }
+            });
+
+            if (!authenticated) {
+                // Authentication failed, return an error response
+                res.json({ success: false });
             }
+        })
+        .catch((error) => {
+            console.error('Error during login:', error);
+            res.json({ success: false });
         });
-
-        // Authentication failed, return an error response
-        res.json({ success: false });
-    }).catch(error => {
-        console.error('Error during login:', error);
-        res.json({ success: false });
-    });
 });
 
 app.post('/api/register', async (req, res) => {
@@ -97,6 +115,42 @@ app.post('/api/register', async (req, res) => {
         res.json({ success: false });
     }
 });
+
+app.post('/api/db', async (req, res) => {
+    try {
+        const userRef = db.collection('Users').doc('loggedUser'); // Specify the document ID
+        const userDoc = await userRef.get();
+
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            const username = userData.Username;
+            res.json({ success: true, username });
+        } else {
+            res.json({ success: false, message: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error retrieving user data from Firestore:', error);
+        res.json({ success: false, message: 'An error occurred' });
+    }
+});
+
+app.get('/api/get-username', async (req, res) => {
+    // You need to have some way to identify the currently logged-in user, such as a session token or user ID.
+    // Assuming you have a variable to identify the user, replace 'userIdentifier' with the actual identifier.
+
+    const userIdentifier = 'loggedUser';
+
+    const userDoc = await db.collection('Users').doc(userIdentifier).get();
+
+    if (userDoc.exists) {
+        const userData = userDoc.data();
+        const username = userData.Username;
+        res.json({ username });
+    } else {
+        res.json({ username: null }); 
+    }
+});
+
 
 
 exports.app = functions.https.onRequest(app);

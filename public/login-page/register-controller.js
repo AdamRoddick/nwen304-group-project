@@ -58,7 +58,7 @@ function registerUser(event) {
             } else {
                 // Registration failed; you can handle the failure here
                 alert('Registration failed. Please try again.');
-                //window.location.href = '/register';
+                window.location.href = '/register';
             }
         })
         .catch((error) => {
