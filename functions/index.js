@@ -140,6 +140,8 @@ app.post('/api/register', async (req, res) => {
         Username: username,
         Password: password,
         Email: email,
+        Latitude: 0,
+        Longitude: 0,
     }
     const customerRef = db.collection("Users");
 
