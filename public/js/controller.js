@@ -177,16 +177,59 @@ function generateUniqueId() {
 
 function displaySideProfileUSername() {
     const userDetails = JSON.parse(localStorage.getItem('currentUser'));
+    // const userDetails = sessionStorage.getItem('currentUser');
     if (userDetails) {
         document.getElementById('side-profile-username').textContent = userDetails.username;
+        document.getElementById('side-profile-status').textContent = userDetails.status;
+        //document.getElementById('side-profile-email').textContent = userDetails.status;
     }
+}
+
+/**
+ * Function to fetch user data from the database
+ * 
+ * @param {*} user 
+ * @returns 
+ */
+function fetchUserData(user){
+    const endPoint = '' + user; // replace '' with database being used
+
+    return fetch(endPoint).then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+        }
+        return response.json();
+    });
+}
+
+
+/**
+ * Function to display the user's profile in the side bar
+ * Will need to be fixed
+ */
+function displaySideProfle() {
+    const userDetails = getCurrentUser();
+
+    if (userDetails) {
+        fetchUserData(userDetails.username).then((userData) => {
+            document.getElementById('side-profile-username').textContent = userData.username;
+            document.getElementById('side-profile-status').textContent = userData.status;
+        });
+    }
+}
+
+// Function to get the current user from localStorage
+// Will need to be fixed
+function getCurrentUser() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    return currentUser;
 }
 
 function logoutUser() {
     const confirmed = confirm('Are you sure you want to log out?');
     if (confirmed) {
         localStorage.removeItem('currentUser');
-        window.location.href = '/register';
+        window.location.href = '/logout';
     }
 }
 
