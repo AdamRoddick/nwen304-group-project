@@ -127,7 +127,12 @@ app.get('/auth/failure', (req, res) => {
 });
 
 app.get('/protected', isLoggedIn, (req, res) => {
-    res.send('Hello!');
+    res.send(`Hello! ${req.user.displayName}`);
+});
+
+app.get('/logout/google', (req, res) => {
+    req.logout();
+    res.send('Logged out of Google Auth');
 });
 
 app.post('/api/register', async (req, res) => {
