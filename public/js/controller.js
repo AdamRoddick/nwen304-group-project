@@ -226,7 +226,8 @@ function displayRecommendedUsers() {
             const userList = document.querySelector('.recommended-users');
 
             // Filter out users who don't match the current user (by username)
-            const nonMatchingUsers = userOperations.users.filter(user => user !== currentUser.username);
+            //only recommend the 5 most recently created users (Users at a similar time)
+            const nonMatchingUsers = userOperations.users.filter(user => user !== currentUser.username).slice(-5);
 
             // Display the filtered list of users
             for (const username of nonMatchingUsers) {
