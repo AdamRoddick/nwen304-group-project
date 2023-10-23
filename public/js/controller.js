@@ -22,6 +22,17 @@ function redirectToLogin() {
     localStorage.removeItem('currentUser');
 }
 
+function getCurrentUser() {
+    return fetch('/api/get-username')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        });
+}
+
+
 
 function init() {
     bindEvents();
@@ -176,18 +187,47 @@ function generateUniqueId() {
 }
 
 function displaySideProfileUSername() {
-    fetch('/api/get-username')
-        .then(response => response.json())
-        .then(data => {
-            if (data.username) {
-                document.getElementById('side-profile-username').textContent = data.username;
-            } else {
-                // Handle the case where the username is not found, e.g., display a default value.
-                document.getElementById('side-profile-username').textContent = 'Guest';
+     fetch('/api/get-username')
+    .then(response => response.json()) // Parse the response JSON
+    .then(data => {
+      if (data.username) {
+       
+        // Now, userDetails is a JavaScript object containing the user data
+        // Set the username in your 'side-profile-username' element
+        document.getElementById('side-profile-username').textContent = data.username;
+      } else {
+        console.error('User not found');
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching user data:', error);
+    });
+}
+
+function createCurrentUserObject() {
+    // Replace this URL with the actual endpoint URL
+    const endpointUrl = '/api/get-username';
+
+    fetch(endpointUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text(); // Retrieve the response as text
+        })
+        .then((data) => {
+            try {
+                // Parse the received string into a JSON object
+                const jsonObject = JSON.parse(data);
+
+                // 'jsonObject' now contains the JSON data
+                return jsonObject;
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
             }
         })
-        .catch(error => {
-            console.error('Error while fetching username:', error);
+        .catch((error) => {
+            console.error('Error:', error);
         });
 }
 
@@ -204,19 +244,21 @@ function loginUser() {
 }
 
 function checkCurrentUser() {
-    const currentUser = localStorage.getItem('currentUser');
-    const logoutBtn = document.getElementById('logout-button');
-    const loginBtn = document.getElementById('login-button');
-    const createPost = document.getElementById('create-post');
-    if (currentUser) {
-      logoutBtn.style.display = 'block';
-      loginBtn.style.display = 'none';
-      createPost.style.display = 'block';
-    } else {
-      logoutBtn.style.display = 'none';
-      loginBtn.style.display = 'block';
-      createPost.style.display = 'none';
-    }
+   getCurrentUser().then(user => {
+        const logoutBtn = document.getElementById('logout-button');
+        const loginBtn = document.getElementById('login-button');
+        const createPost = document.getElementById('create-post');
+
+        if (user && user.username) {
+            logoutBtn.style.display = 'block';
+            loginBtn.style.display = 'none';
+            createPost.style.display = 'block';
+        } else {
+            logoutBtn.style.display = 'none';
+            loginBtn.style.display = 'block';
+            createPost.style.display = 'none';
+        }
+    });
   }
 
   function followUser(currentUser, userToFollow) {
