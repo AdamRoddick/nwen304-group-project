@@ -8,6 +8,41 @@ const ejs = require('ejs');
 // Require the Firebase Admin setup from the firebaseAdmin.js file
 const admin = require('./firebaseAdmin');
 const passport = require('passport');
+const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
+
+const cookieConfig = {
+    name: 'session',
+    keys: ['boogieWonderland'],
+    resave: false,
+    saveUnintialized: true,
+    secure: true,
+    maxAge: 86400000 // 24 hours
+};
+
+//app.use(cookieSession(cookieConfig));
+//app.use(cookieParser());
+
+//Extending the session expiration time on each request
+/*app.use((req, res, next) => {
+    const session = req.session;
+    if (session) {
+        session.nowInMinutes = Math.floor(Date.now() / 60e3); //every minute
+    }
+    next();
+});*/
+
+/*const sessionConfig = {
+    database: admin.database(),
+    secret: 'boogieWonderland',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        sessionID: 'session',
+        secure: true,
+        maxAge: 86400000 // 24 hours
+    }
+};*/
 
 // Firestore database reference
 const db = admin.firestore();
