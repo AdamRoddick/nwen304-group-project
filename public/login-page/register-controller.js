@@ -1,8 +1,10 @@
 window.addEventListener("load", init);
 
+var latitude;
+var longitude;
+
 function init() {
     bindEvents();
-
     // Initialize the postOperations.posts array with posts from localStorage
     userOperations.user = JSON.parse(localStorage.getItem('users')) || [];
 }
@@ -34,11 +36,14 @@ function registerUser(event) {
         alert("Passwords do not match");
         return;
     }
-
+    console.log(latitude + " - " + longitude);
     const userData = {
         username: username,
         email: email,
         password: password,
+
+        latitude: latitude,
+        longitude: longitude,
     };
 
     fetch('/api/register', {
@@ -115,3 +120,56 @@ function generateUniqueId() {
     var uniqueId = timestamp.toString() + random.toString();
     return uniqueId;
 }
+
+// Add a function to get the user's location
+function getLocation() {
+    // Check if the Geolocation API is supported in the user's browser
+    if ("geolocation" in navigator) {
+        // Request permission to access the user's location
+        navigator.geolocation.getCurrentPosition(function (position) {
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+            console.log(latitude);
+
+        }, function (error) {
+            // Handle errors if the user denies access or if there's an issue with geolocation
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    console.log("User denied the request for geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    console.log("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    console.log("The request to get user location timed out.");
+                    break;
+                default:
+                    console.log("An unknown error occurred.");
+            }
+        });
+    } else {
+        console.log("Geolocation is not supported in this browser.");
+    }
+}
+
+function updateUserLocation() {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+
+            resolve();
+          },
+          (error) => {
+            console.log(error);
+            reject(error);
+          }
+        );
+      } else {
+        console.log('Geolocation is not supported by this browser.');
+        reject('Geolocation is not supported by this browser.');
+      }
+    });
+  }
