@@ -58,7 +58,7 @@ function init() {
         .then(posts => {
             postOperations.posts = posts || [];
             console.log(posts);
-            // Update your display code here, e.g., by calling displayPost for each post
+            displayExistingPosts();
         })
         .catch(error => {
             console.error('Error fetching posts:', error);
@@ -81,6 +81,7 @@ function init() {
             console.error('Error fetching user data:', error);
         });
 
+    displayRecommendedUsers();
     displaySideProfileUSername();
     checkCurrentUser();
 }
@@ -230,25 +231,34 @@ function displayExistingPosts() {
 
 // Function to initialize and display recommended users
 function displayRecommendedUsers() {
-    const userList = document.querySelector('.recommended-users');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    getCurrentUser()
+        .then(currentUser => {
+            const userList = document.querySelector('.recommended-users');
 
-    for (const user of userOperations.users) {
-        if (user.id !== currentUser.id && !followsUser(currentUser, user)) {
-            displayUser(user);
+            // Filter out users who don't match the current user (by username)
+            const nonMatchingUsers = userOperations.users.filter(user => user !== currentUser.username);
 
-            // Add an event listener to the "Follow" button for each recommended user
-            const followButton = document.getElementById(`follow-button-${user.username}`);
-            followButton.addEventListener('click', () => followUser(currentUser, user));
-        }
-    }
+            // Display the filtered list of users
+            for (const username of nonMatchingUsers) {
+                const user = { username }; // Create a user object with the username
+                displayUser(user);
+
+                // Add an event listener to the "Follow" button for each recommended user
+                const followButton = document.getElementById(`follow-button-${username}`);
+                followButton.addEventListener('click', () => followUser(currentUser, user));
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching current user data:', error);
+        });
 }
+
 
 
 // Call the function to display existing posts when the page loads
 window.addEventListener("load", () => {
-    init();
-    displayExistingPosts();
+    //init();
+    //displayExistingPosts();
     displayRecommendedUsers();
 });
 
