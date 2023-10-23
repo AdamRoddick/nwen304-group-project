@@ -81,7 +81,7 @@ function init() {
             console.error('Error fetching user data:', error);
         });
 
-    displayRecommendedUsers();
+    //displayRecommendedUsers();
     displaySideProfileUSername();
     checkCurrentUser();
 }
