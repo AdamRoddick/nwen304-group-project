@@ -191,6 +191,45 @@ app.get('/api/get-username', async (req, res) => {
     }
 });
 
+app.get('/api/get-longtitude-latitude', async (req, res) => {
+    const userIdentifier = 'loggedUser';
+
+    const userDoc = await db.collection('Users').doc(userIdentifier).get();
+
+    if (userDoc.exists) {
+        const userData = userDoc.data();
+        const long = userData.Longitude;
+        const lat = userData.Latitude;
+        res.json({ username });
+    } else {
+        res.json({ username: null });
+    }
+});
+
+app.post('/api/update-longitude-latitude', async (req, res) => {
+    const userIdentifier = 'loggedUser'; 
+
+    // Extract the new longitude and latitude values from the request body
+    const { longitude, latitude } = req.body;
+
+    // Update the Firestore document with the new longitude and latitude
+    const userDocRef = db.collection('Users').doc(userIdentifier);
+
+    try {
+        await userDocRef.update({
+            Longitude: longitude,
+            Latitude: latitude
+        });
+
+        res.json({ success: true, message: 'Longitude and Latitude updated successfully' });
+    } catch (error) {
+        console.error('Error updating Longitude and Latitude:', error);
+        res.status(500).json({ success: false, message: 'Failed to update Longitude and Latitude' });
+    }
+});
+
+
+
 app.delete('/delete-logged-user', async (req, res) => {
     try {
         // Reference to the 'Users' collection
