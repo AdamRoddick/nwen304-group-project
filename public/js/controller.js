@@ -130,6 +130,12 @@ function addPost(event) {
                 .then(data => {
                     // Handle the response data, which may contain the newly created post ID, if needed
                     console.log('New Post ID:', data.postId);
+                    postOperations.posts.push({
+                        title,
+                        text,
+                        user: user,
+                        time,
+                    });
                     // Call displayPost and pass the post object
                     displayPost({
                         title,
@@ -159,45 +165,29 @@ function displayPost(post) {
     const postElement = document.createElement('div');
     postElement.classList.add('post');
 
-    // Initialize user and time
-    let user, time;
+    // Extract the user and time from the post object
+    const user = post.user.username; // Get the username from the user object in the post
+    const time = post.time;
 
-    // Fetch user data asynchronously
-    getCurrentUser()
-        .then(userData => {
-            user = userData.username;
+    // Construct the post HTML structure with user and time
+    postElement.innerHTML = `
+        <div class="post-header">
+            <img src="images/default-avatar.jpg" alt="User Profile Picture" class="post-profile-picture">
+            <div class="post-header-info">
+                <h3 class="post-username">${user}</h3>
+                <p class="post-time">${time}</p>
+            </div>
+        </div>
+        <div class="post-content">
+            <h3 class="post-title">${post.title}</h3>
+            <p class="post-text">${post.text}</p>
+        </div>
+    `;
 
-            // Create a new Date object to get the current date and time
-            const currentDate = new Date();
-            // Extract the current time components
-            const hours = currentDate.getHours();
-            const minutes = currentDate.getMinutes();
-            const seconds = currentDate.getSeconds();
-            // Format the time with leading zeros
-            time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-            // Construct the post HTML structure with user and time
-            postElement.innerHTML = `
-                <div class="post-header">
-                    <img src="images/default-avatar.jpg" alt="User Profile Picture" class="post-profile-picture">
-                    <div class="post-header-info">
-                        <h3 class="post-username">${user}</h3>
-                        <p class="post-time">${time}</p>
-                    </div>
-                </div>
-                <div class="post-content">
-                    <h3 class="post-title">${post.title}</h3>
-                    <p class="post-text">${post.text}</p>
-                </div>
-            `;
-
-            // Add the new post to the post list
-            postList.appendChild(postElement);
-        })
-        .catch(error => {
-            console.error('Error fetching user data:', error);
-        });
+    // Add the new post to the post list
+    postList.appendChild(postElement);
 }
+
 
 function displayUser(user) {
     const userList = document.querySelector('.recommended-users');
