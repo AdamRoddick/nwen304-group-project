@@ -1,6 +1,7 @@
 // Main routing points
 const functions = require('firebase-functions');
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const path = require('path');
 const ejs = require('ejs');
@@ -91,11 +92,21 @@ const publicDirectoryPath = path.join(__dirname, '/public');
 // Serve static files from the 'public' directory
 app.use(express.static(publicDirectoryPath));
 
+//to use body parts
+app.use(express.json());
+
+//to use cors for frontend framework
+app.use(cors());
+
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 
-// Define routes to handle requests for pages
-app.get('/login', (req, res) => {
+// Define a route to handle requests for your home page
+app.get('/', (req, res) => {
+    res.render('index', { title: 'OurSpace' });
+});
+
+app.get('/login', async(req, res) => {
     res.render('login', { title: 'OurSpace' });
 });
 
@@ -132,13 +143,14 @@ app.get('/profile', (req, res) => {
     });
 });
 
+
 // Define the login route to handle authentication
 app.post('/api/login', (req, res) => {
-    // Handle user authentication here, possibly using Firebase Admin
+    // Handle user authentication here, using Firebase Admin
     const username = req.body.username;
     const password = req.body.password;
 
-    const customerRef = db.collection("Login Details");
+    const customerRef = db.collection("Users");
 
     customerRef.get().then((QuerySnapshot) => {
         QuerySnapshot.forEach(document => {
@@ -155,6 +167,33 @@ app.post('/api/login', (req, res) => {
     }).catch(error => {
         console.error('Error during login:', error);
         res.json({ success: false });
+    });
+});
+
+app.post('/api/', (req, res) => {
+    // Handle user information here, using Firebase Admin
+    const username = req.body.Username;
+    const customerRef = db.collection("Users");
+
+    customerRef.get().then((querySnapshot) => {
+        let found = false;
+        querySnapshot.forEach((document) => {
+            const data = document.data();
+            //if (data.Username === username) {
+                // Found user referenced
+                found = true;
+                console.log("Followers:", data.Followers);
+            //}
+        });
+
+        if (!found) {
+            console.log("Followers not found since user does not exist");
+        }
+        
+        
+    }).catch((error) => {
+        console.error('Error during login:', error);
+        
     });
 });
 
