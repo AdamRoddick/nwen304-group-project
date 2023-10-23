@@ -206,7 +206,7 @@ app.get('/api/get-longtitude-latitude', async (req, res) => {
     }
 });
 
-app.post('/api/update-longitude-latitude', async (req, res) => {
+app.put('/api/update-longitude-latitude', async (req, res) => {
     const userIdentifier = 'loggedUser'; 
 
     // Extract the new longitude and latitude values from the request body
@@ -216,10 +216,10 @@ app.post('/api/update-longitude-latitude', async (req, res) => {
     const userDocRef = db.collection('Users').doc(userIdentifier);
 
     try {
-        await userDocRef.update({
+        await userDocRef.set({
             Longitude: longitude,
             Latitude: latitude
-        });
+        }, { merge: true });
 
         res.json({ success: true, message: 'Longitude and Latitude updated successfully' });
     } catch (error) {
