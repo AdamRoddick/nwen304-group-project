@@ -47,11 +47,39 @@ function getCurrentUser() {
 function init() {
     bindEvents();
 
-    // Initialize the postOperations.posts array with posts from localStorage
-    postOperations.posts = JSON.parse(localStorage.getItem('posts')) || [];
+    // Initialize the postOperations.posts array with posts from Firestore
+    fetch('/api/get-posts')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+            return response.json();
+        })
+        .then(posts => {
+            postOperations.posts = posts || [];
+            console.log(posts);
+            // Update your display code here, e.g., by calling displayPost for each post
+        })
+        .catch(error => {
+            console.error('Error fetching posts:', error);
+        });
 
-    // Initialize the postOperations.posts array with posts from localStorage
-    userOperations.user = JSON.parse(localStorage.getItem('users')) || [];
+    // Initialize the postOperations.posts array with posts from Firestore
+    // Fetch user data from Firestore, excluding 'loggedUser'
+    fetch('/api/get-users')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        })
+        .then(users => {
+            userOperations.users = users || []; // Initialize with retrieved user data or an empty array
+            console.log(users);
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
 
     displaySideProfileUSername();
     checkCurrentUser();
@@ -136,7 +164,7 @@ function displayPost(post) {
     // Fetch user data asynchronously
     getCurrentUser()
         .then(userData => {
-            user = userData.username; // Assuming 'username' is the property you want
+            user = userData.username;
 
             // Create a new Date object to get the current date and time
             const currentDate = new Date();

@@ -1,5 +1,5 @@
 const userOperations = {
-    users: JSON.parse(localStorage.getItem('users')) || [],
+    users: [],
 
     add(userObject) {
         this.users.push(userObject);

@@ -166,6 +166,44 @@ app.delete('/delete-logged-user', async (req, res) => {
     }
 });
 
+app.get('/api/get-posts', async (req, res) => {
+    try {
+        const postsCollection = db.collection('Posts');
+        const postsQuerySnapshot = await postsCollection.get();
+
+        const posts = [];
+        postsQuerySnapshot.forEach((doc) => {
+            const post = doc.data();
+            posts.push(post);
+        });
+
+        res.json(posts);
+    } catch (error) {
+        console.error('Error getting posts:', error);
+        res.status(500).json({ error: 'An error occurred while fetching posts' });
+    }
+});
+
+app.get('/api/get-users', async (req, res) => {
+    try {
+        const usersCollection = db.collection('Users');
+        const querySnapshot = await usersCollection.get();
+        const users = [];
+
+        querySnapshot.forEach((doc) => {
+            if (doc.id !== 'loggedUser') {
+                const userData = doc.data();
+                users.push(userData.Username);
+            }
+        });
+
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).json({ message: 'An error occurred' });
+    }
+});
+
 app.post('/api/create-post', (req, res) => {
     const postsCollection = db.collection('Posts');
     const { title, text, user, time} = req.body;
