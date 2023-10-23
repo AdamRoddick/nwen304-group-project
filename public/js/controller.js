@@ -117,6 +117,7 @@ function displaySideProfileUSername() {
     // const userDetails = sessionStorage.getItem('currentUser');
     if (userDetails) {
         document.getElementById('side-profile-username').textContent = userDetails.username;
+        document.getElementById('side-profile-status').textContent = userDetails.status;
         //document.getElementById('side-profile-email').textContent = userDetails.status;
     }
 }
@@ -165,7 +166,7 @@ function logoutUser() {
     const confirmed = confirm('Are you sure you want to log out?');
     if (confirmed) {
         localStorage.removeItem('currentUser');
-        window.location.href = '/register';
+        window.location.href = '/logout';
     }
 }
 

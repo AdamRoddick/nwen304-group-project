@@ -1,12 +1,21 @@
+// Main routing points
 const functions = require('firebase-functions');
 const express = require('express');
 const app = express();
-const session = require('express-session');
-const cookie = require('cookie-session');
-const FireBaseStore = require('connect-session-firebase')(require(session));
-const http = require('http');
-const admin = require('firebase-admin');
+const path = require('path');
+const ejs = require('ejs');
 
+// Cookies and Sessions
+const session = require('express-session');
+const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
+
+// Firebase
+//const FireBaseStore = require('connect-session-firebase')(require(session));
+const admin = require('firebase-admin');
+const serviceAccount = require('../serviceAccountKey.json')
+
+// Configure Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyAcL_a8tS4bvMXFAr6oHJcWHkyjVFiYzb4",
     authDomain: "nwen304-groupproject-9db15.firebaseapp.com",
@@ -21,38 +30,52 @@ const firebaseConfig = {
 // Initialise Firebase and ServiceAccount registration
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://nwen304-groupproject-9db15-default-rtdb.asia-southeast1.firebasedatabase.app"
+    databaseURL: firebaseConfig.databaseURL
 })
+
+app.use(express.urlencoded({ extended: false }));
 
 // Configure the session and cookie
 const sessionConfig = {
-    store: new FireBaseStore({
-        database: admin.database()
-    }),
+    database: admin.database(),
     secret: 'boogieWonderland',
     resave: false,
-    saveUnintialized: true,
+    saveUninitialized: true,
     cookie: { 
+        sessionID: 'session',
         secure: true,
         maxAge: 86400000 // 24 hours
-    },
+    }
 };
 
 const cookieConfig = {
     name: 'session',
     keys: ['boogieWonderland'],
+    resave: false,
+    saveUnintialized: true,
     secure: true,
     maxAge: 86400000 // 24 hours
 };
 
 app.use(session(sessionConfig));
+app.use(cookieSession(cookieConfig));
+
+app.use(cookieParser());
 //app.use(express.json());
+
+//Extending the session expiration time on each request
+app.use((req, res, next) => {
+    const session = req.session;
+    if (session) {
+        session.nowInMinutes = Math.floor(Date.now() / 60e3); //every minute
+    }
+    next();
+});
 
 //const sessions = require('express-session');
 const { initializeApp } = require('firebase-admin/app');
 
-const path = require('path');
-const ejs = require('ejs');
+
 
 
 const port = process.env.PORT || 3000; // Use the specified port or 3000 by default
@@ -88,7 +111,7 @@ app.post('/login', (req, res) => {
 app.get('/logout', (req, res) => {
     // destroys the session and will unset the req.session property
     // security purposes
-    req.session.destroy();
+    req.session = null;
     res.redirect('/');
 });
 
