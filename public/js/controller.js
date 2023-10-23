@@ -255,16 +255,19 @@ function loginUser() {
 }
 
 function checkCurrentUser() {
-   getCurrentUser().then(user => {
+    getCurrentUser().then(user => {
+        const sideProfileUsername = document.getElementById('side-profile-username');
         const logoutBtn = document.getElementById('logout-button');
         const loginBtn = document.getElementById('login-button');
         const createPost = document.getElementById('create-post');
 
         if (user && user.username) {
+            sideProfileUsername.textContent = user.username;
             logoutBtn.style.display = 'block';
             loginBtn.style.display = 'none';
             createPost.style.display = 'block';
         } else {
+            sideProfileUsername.textContent = 'Guest';
             logoutBtn.style.display = 'none';
             loginBtn.style.display = 'block';
             createPost.style.display = 'none';
