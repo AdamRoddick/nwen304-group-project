@@ -2,11 +2,12 @@ const functions = require('firebase-functions');
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const session = require('express-session');
 const path = require('path');
 const ejs = require('ejs');
-
 // Require the Firebase Admin setup from the firebaseAdmin.js file
 const admin = require('./firebaseAdmin');
+const passport = require('passport');
 
 // Firestore database reference
 const db = admin.firestore();
@@ -15,6 +16,16 @@ const port = process.env.PORT || 3000; // Use the specified port or 3000 by defa
 
 // Define the path to your static files (CSS, JavaScript, images, etc.)
 const publicDirectoryPath = path.join(__dirname, '/public');
+
+require('./auth');
+app.use(session({
+    secret: 'cats',
+    resave: false,             // Add this line
+    saveUninitialized: false,  // Add this line
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 // Serve static files from the 'public' directory
 app.use(express.static(publicDirectoryPath));
@@ -92,6 +103,31 @@ app.post('/api/login', (req, res) => {
             console.error('Error during login:', error);
             res.json({ success: false });
         });
+});
+
+function isLoggedIn(req, res, next) {
+    req.user ? next() : res.sendStatus(401);
+}
+
+app.get('/auth/google',
+    passport.authenticate('google', {
+        scope:
+            ['email', 'profile']
+    }
+    ));
+
+app.get('/auth/google/callback',
+    passport.authenticate('google', {
+        successRedirect: '/protected',
+        failureRedirect: '/auth/failure'
+    }));
+
+app.get('/auth/failure', (req, res) => {
+    res.send('Failed to authenticate..');
+});
+
+app.get('/protected', isLoggedIn, (req, res) => {
+    res.send('Hello!');
 });
 
 app.post('/api/register', async (req, res) => {
