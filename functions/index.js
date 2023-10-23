@@ -228,8 +228,6 @@ app.put('/api/update-longitude-latitude', async (req, res) => {
     }
 });
 
-
-
 app.delete('/delete-logged-user', async (req, res) => {
     try {
         // Reference to the 'Users' collection
