@@ -168,7 +168,11 @@ app.delete('/delete-logged-user', async (req, res) => {
 
 app.post('/api/create-post', (req, res) => {
     const postsCollection = db.collection('Posts');
-    const { title, text, user, time } = req.body;
+    const { title, text, user, time} = req.body;
+
+    if (!title || !text || !user || !time) {
+        return res.status(400).json({ message: 'Missing required data' });
+    }
 
     const newPost = {
         title,

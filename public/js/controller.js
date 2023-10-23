@@ -101,6 +101,13 @@ function addPost(event) {
                 .then(data => {
                     // Handle the response data, which may contain the newly created post ID, if needed
                     console.log('New Post ID:', data.postId);
+                    // Call displayPost and pass the post object
+                    displayPost({
+                        title,
+                        text,
+                        user: user,
+                        time,
+                    });
                 })
                 .catch(error => {
                     console.error('Error during the server request:', error);
