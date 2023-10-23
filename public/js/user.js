@@ -4,8 +4,15 @@ class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.status = 'Post your status!';
         this.following = following || [];
     }
+
+    // Function to update the user's status
+    updateStatus(newStatus) {
+        this.status = newStatus;
+    }
+    
 
     followUser(user) {
         this.following.push(user);
