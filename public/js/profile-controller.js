@@ -4,12 +4,49 @@ window.addEventListener("load", init);
 function init() {
     bindEvents();
 
-    // Initialize the postOperations.posts array with posts from localStorage
-    postOperations.posts = JSON.parse(localStorage.getItem('posts')) || [];
+    // Initialize the postOperations.posts array with posts from Firestore
+    fetch('/api/get-posts')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+            return response.json();
+        })
+        .then(posts => {
+            postOperations.posts = posts || [];
+            console.log(posts);
+            displayExistingPosts();
+        })
+        .catch(error => {
+            console.error('Error fetching posts:', error);
+        });
 
-    // Initialize the postOperations.posts array with posts from localStorage
-    userOperations.user = JSON.parse(localStorage.getItem('users')) || [];
+    // Fetch user data from Firestore, excluding 'loggedUser'
+    fetch('/api/get-users')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        })
+        .then(users => {
+            userOperations.users = users || []; // Initialize with retrieved user data or an empty array
+            console.log(users);
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
 
+}
+
+function getCurrentUser() {
+    return fetch('/api/get-username')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        });
 }
 
 function bindEvents() {
@@ -19,8 +56,8 @@ function bindEvents() {
 window.addEventListener("load", () => {
     init();
     displayExistingPosts();
-    displayFollowerUsers();
-    displayFollowingUsers();
+    //displayFollowerUsers();
+    //displayFollowingUsers();
 });
 
 function displayPost(post) {
@@ -30,37 +67,69 @@ function displayPost(post) {
     const postElement = document.createElement('div');
     postElement.classList.add('post');
 
-    // Construct the post HTML structure
-    postElement.innerHTML = `
-        <div class="post-header">
-            <img src="images/default-avatar.jpg" alt="User Profile Picture" class="post-profile-picture">
-            <div class="post-header-info">
-                <h3 class="post-username">${post.user}</h3>
-                <p class="post-time">${post.time}</p>
-            </div>
-        </div>
-        <div class="post-content">
-            <h3 class="post-title">${post.title}</h3>
-            <p class="post-text">${post.text}</p>
-        </div>
-    `;
+    // Initialize user and time
+    let user, time;
 
-    // Add the new post to the post list
-    postList.appendChild(postElement);
+    // Fetch user data asynchronously
+    getCurrentUser()
+        .then(userData => {
+            user = userData.username;
+
+            // Create a new Date object to get the current date and time
+            const currentDate = new Date();
+            // Extract the current time components
+            const hours = currentDate.getHours();
+            const minutes = currentDate.getMinutes();
+            const seconds = currentDate.getSeconds();
+            // Format the time with leading zeros
+            time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            // Construct the post HTML structure with user and time
+            postElement.innerHTML = `
+                <div class="post-header">
+                    <img src="images/default-avatar.jpg" alt="User Profile Picture" class="post-profile-picture">
+                    <div class="post-header-info">
+                        <h3 class="post-username">${user}</h3>
+                        <p class="post-time">${time}</p>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <h3 class="post-title">${post.title}</h3>
+                    <p class="post-text">${post.text}</p>
+                </div>
+                <button class="post-button" id="edit-button">Post</button>
+            `;
+
+            // Add the new post to the post list
+            postList.appendChild(postElement);
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
 }
 
 // Function to initialize and display existing posts
 function displayExistingPosts() {
     const postList = document.querySelector('.post-list');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    // Loop through existing posts and display them
-    for (const post of postOperations.posts) {
-        console.log(post);
-        console.log(post.user.id + " : " + currentUser.id);
-        if (post.userId === currentUser.id) {
-            displayPost(post);
-        }
-    }
+
+    let user;
+    getCurrentUser()
+        .then(userData => {
+            user = userData.username;
+            // Loop through existing posts and display them
+            for (const post of postOperations.posts) {
+
+
+                if (post.user.username === user) {
+                    displayPost(post);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+
+
 }
 
 function displayFollowingUser(user) {
