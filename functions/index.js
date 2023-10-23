@@ -76,31 +76,27 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-app.post('/api/', (req, res) => {
-    // Handle user information here, using Firebase Admin
-    const username = req.body.Username;
+app.post('/api/register', async (req, res) => {
+    // Handle user authentication here, using Firebase Admin
+    const username = req.body.username;
+    const password = req.body.password;
+    const email = req.body.email;
+
+    const addData = {
+        Username: username,
+        Password: password,
+        Email: email,
+    }
     const customerRef = db.collection("Users");
 
-    customerRef.get().then((querySnapshot) => {
-        let found = false;
-        querySnapshot.forEach((document) => {
-            const data = document.data();
-            //if (data.Username === username) {
-                // Found user referenced
-                found = true;
-                console.log("Followers:", data.Followers);
-            //}
-        });
-
-        if (!found) {
-            console.log("Followers not found since user does not exist");
-        }
-        
-        
-    }).catch((error) => {
-        console.error('Error during login:', error);
-        
-    });
+    try {
+        const response = await db.collection("Users").add(addData);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error during registration:', error);
+        res.json({ success: false });
+    }
 });
+
 
 exports.app = functions.https.onRequest(app);

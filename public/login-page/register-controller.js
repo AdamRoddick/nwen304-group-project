@@ -35,7 +35,38 @@ function registerUser(event) {
         return;
     }
 
-    const id = generateUniqueId();
+    const userData = {
+        username: username,
+        email: email,
+        password: password,
+    };
+
+    fetch('/api/register', {
+        method: 'POST',
+        body: JSON.stringify(userData),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                // Registration was successful; you can handle success here
+                // You might want to redirect the user to a different page
+                alert('Registration successful!');
+                window.location.href = '/'
+            } else {
+                // Registration failed; you can handle the failure here
+                alert('Registration failed. Please try again.');
+                //window.location.href = '/register';
+            }
+        })
+        .catch((error) => {
+            console.error('Error during registration:', error);
+            alert('An error occurred during registration. Please try again.');
+        });
+
+    /*const id = generateUniqueId();
 
     const newUser = new User(id, username, email, password);
 
@@ -53,7 +84,7 @@ function registerUser(event) {
     document.querySelector('#confirmPassword').value = '';
 
     // Redirect to index.html
-    window.location.href = '/';
+    window.location.href = '/';*/
 }
 
 // Call the function to display existing posts when the page loads
