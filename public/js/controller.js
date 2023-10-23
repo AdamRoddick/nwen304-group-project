@@ -130,23 +130,44 @@ function displayPost(post) {
     const postElement = document.createElement('div');
     postElement.classList.add('post');
 
-    // Construct the post HTML structure
-    postElement.innerHTML = `
-        <div class="post-header">
-            <img src="images/default-avatar.jpg" alt="User Profile Picture" class="post-profile-picture">
-            <div class="post-header-info">
-                <h3 class="post-username">${post.user}</h3>
-                <p class="post-time">${post.time}</p>
-            </div>
-        </div>
-        <div class="post-content">
-            <h3 class="post-title">${post.title}</h3>
-            <p class="post-text">${post.text}</p>
-        </div>
-    `;
+    // Initialize user and time
+    let user, time;
 
-    // Add the new post to the post list
-    postList.appendChild(postElement);
+    // Fetch user data asynchronously
+    getCurrentUser()
+        .then(userData => {
+            user = userData.username; // Assuming 'username' is the property you want
+
+            // Create a new Date object to get the current date and time
+            const currentDate = new Date();
+            // Extract the current time components
+            const hours = currentDate.getHours();
+            const minutes = currentDate.getMinutes();
+            const seconds = currentDate.getSeconds();
+            // Format the time with leading zeros
+            time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            // Construct the post HTML structure with user and time
+            postElement.innerHTML = `
+                <div class="post-header">
+                    <img src="images/default-avatar.jpg" alt="User Profile Picture" class="post-profile-picture">
+                    <div class="post-header-info">
+                        <h3 class="post-username">${user}</h3>
+                        <p class="post-time">${time}</p>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <h3 class="post-title">${post.title}</h3>
+                    <p class="post-text">${post.text}</p>
+                </div>
+            `;
+
+            // Add the new post to the post list
+            postList.appendChild(postElement);
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
 }
 
 function displayUser(user) {
