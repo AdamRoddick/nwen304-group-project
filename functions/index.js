@@ -13,7 +13,7 @@ const cookieParser = require('cookie-parser');
 // Firebase
 //const FireBaseStore = require('connect-session-firebase')(require(session));
 const admin = require('firebase-admin');
-const serviceAccount = require('../serviceAccountKey.json')
+const serviceAccount = require('./serviceAccountKey.json')
 
 // Configure Firebase
 const firebaseConfig = {
@@ -74,9 +74,6 @@ app.use((req, res, next) => {
 
 //const sessions = require('express-session');
 const { initializeApp } = require('firebase-admin/app');
-
-
-
 
 const port = process.env.PORT || 3000; // Use the specified port or 3000 by default
 
