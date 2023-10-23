@@ -18,8 +18,18 @@ function resetInactivityTimeout() {
 }
 
 function redirectToLogin() {
-    window.location.href = '/login';
-    localStorage.removeItem('currentUser');
+    fetch('/delete-logged-user', { method: 'DELETE' })
+        .then(response => {
+            if (response.ok) {
+                // Document deleted successfully on the server
+                window.location.href = '/login'; // Redirect the user
+            } else {
+                console.error('Failed to delete the user on the server');
+            }
+        })
+        .catch(error => {
+            console.error('Error during the server request:', error);
+        });
 }
 
 function getCurrentUser() {
