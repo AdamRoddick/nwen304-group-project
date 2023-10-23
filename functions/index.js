@@ -56,7 +56,13 @@ app.get('/profile', (req, res) => {
     // Retrieve the username from local storage
     res.render('profile', {
         title: 'OurSpace',
-        username: 'Username' //Database should fetch the actual username and other stuff
+        username: fetch('/api/get-username')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        }) //Database should fetch the actual username and other stuff
     });
 });
 

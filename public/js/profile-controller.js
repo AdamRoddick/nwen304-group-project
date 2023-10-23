@@ -36,7 +36,26 @@ function init() {
         .catch(error => {
             console.error('Error fetching user data:', error);
         });
+        displayProfileUSername();
 
+
+}
+
+function displayProfileUSername() {
+    fetch('/api/get-username')
+   .then(response => response.json()) // Parse the response JSON
+   .then(data => {
+     if (data.username) {
+       // Now, userDetails is a JavaScript object containing the user data
+       // Set the username in your 'profile-username' element
+       document.getElementById('profile-username').textContent = data.username;
+     } else {
+       console.error('User not found');
+     }
+   })
+   .catch(error => {
+     console.error('Error fetching user data:', error);
+   });
 }
 
 function getCurrentUser() {
