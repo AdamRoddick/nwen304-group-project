@@ -43,22 +43,22 @@ In this project, we are required to implement two flavors of CRUD (Create, Read,
 
 - [x] Implement basic user registration functionality.
 - [x] Implement basic user login/logout functionality.
-- [ ] Use a cloud-based NoSQL database (such as MongoDB or Firebase Real-time database).
+- [x] Use a cloud-based NoSQL database (such as MongoDB or Firebase Real-time database).
 - [x] Allow viewing items without authentication.
 - [x] Support dynamic endpoints for various operations (get, put, delete).
 - [x] Use client-side JavaScript for some functionality.
-- [ ] Allow the use of OAuth/OpenID Connect for user registration and authentication (Web application only).
+- [x] Allow the use of OAuth/OpenID Connect for user registration and authentication (Web application only).
 - [x] Host your server on a cloud platform.
 
 ### Completion Requirements (25%)
 
-- [ ] Integrate microservices.
+- [x] Integrate microservices.
 - [ ] Measure the performance of your server application.
-- [ ] Implement privacy considerations.
+- [x] Implement privacy considerations.
 
 ### Challenge Requirements (20%)
 
-- [ ] Implement a recommendation service.
+- [x] Implement a recommendation service.
 - [ ] Implement an email loop for password reset.
 - [x] Support a timeout function for user sessions.
 
@@ -67,13 +67,13 @@ In this project, we are required to implement two flavors of CRUD (Create, Read,
 To run this project locally, follow these steps:
 
 1. Clone the repository: `https://github.com/AdamRoddick/nwen304-group-project.git`
-2. Open `index.html` in your chosen web browser
+2. Cd to project directory
+3. Run `firebase emulators:start` in cmd
 
 ## Contributors
 
 - Adam Roddick (adamroddick.developer@gmail.com)
 - Benjamin McEvoy (benmcevoy2002@gmail.com)
-- Carlo Cigaral (carlo.cigaral@gmail.com)
 - Vedaanth Kannan (veda.alagappan26@gmail.com)
 
 ## License
