@@ -171,7 +171,7 @@ app.get('/protected', isLoggedIn, async (req, res) => {
 
 app.get('/logout/google', (req, res) => {
     req.logout();
-    req.session.destroy();
+    //req.session.destroy();
     res.send('Logged out of Google Auth');
 });
 
