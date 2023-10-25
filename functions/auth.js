@@ -5,8 +5,8 @@ const GoogleClientID = '39294675712-plngvbk9c04fvn5bk6mgs6jdnjsnobmi.apps.google
 const GoogleClientSecret = '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';
 
 passport.use(new GoogleStrategy({
-    clientID: process.env.GoogleClientID,
-    clientSecret: process.env.GoogleClientSecret,
+    clientID: GoogleClientID,
+    clientSecret: GoogleClientSecret,
     callbackURL: "https://nwen304-groupproject-9db15.web.app/auth/google/callback",
     passReqToCallback: true
 },
