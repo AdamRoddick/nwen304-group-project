@@ -59,7 +59,7 @@ function registerUser(event) {
                 // Registration was successful; you can handle success here
                 // You might want to redirect the user to a different page
                 alert('Registration successful!');
-                window.location.href = '/'
+                window.location.href = '/login'
             } else {
                 // Registration failed; you can handle the failure here
                 alert('Registration failed. Please try again.');

@@ -223,20 +223,24 @@ function displayExistingPosts() {
 function displayRecommendedUsers() {
     getCurrentUser()
         .then(currentUser => {
-            const userList = document.querySelector('.recommended-users');
+            if (currentUser && currentUser.username) {
+                const userList = document.querySelector('.recommended-users');
 
-            // Filter out users who don't match the current user (by username)
-            //only recommend the 5 most recently created users (Users at a similar time)
-            const nonMatchingUsers = userOperations.users.filter(user => user !== currentUser.username).slice(-5);
+                // Filter out users who don't match the current user (by username)
+                //only recommend the 5 most recently created users (Users at a similar time)
+                const nonMatchingUsers = userOperations.users.filter(user => user !== currentUser.username).slice(-5);
 
-            // Display the filtered list of users
-            for (const username of nonMatchingUsers) {
-                const user = { username }; // Create a user object with the username
-                displayUser(user);
+                // Display the filtered list of users
+                for (const username of nonMatchingUsers) {
+                    const user = { username }; // Create a user object with the username
+                    displayUser(user);
 
-                // Add an event listener to the "Follow" button for each recommended user
-                const followButton = document.getElementById(`follow-button-${username}`);
-                followButton.addEventListener('click', () => followUser(currentUser, user));
+                    // Add an event listener to the "Follow" button for each recommended user
+                    const followButton = document.getElementById(`follow-button-${username}`);
+                    followButton.addEventListener('click', () => followUser(currentUser, user));
+                }
+            } else {
+                console.log('User not logged in');
             }
         })
         .catch(error => {

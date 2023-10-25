@@ -40,6 +40,7 @@ Our application uses firestore, a nosql database to store and manage data. Below
      - `content` (String)
      - `author` (Reference to a User)
      - `timestamp` (Time posted)
+<<<<<<< HEAD
 
 #!/bin/bash
 
@@ -129,3 +130,5 @@ function run_tests() {
 
 # Run the tests
 run_tests
+=======
+>>>>>>> 1eca859d8f4f47bd029594939459fa80307d0a94

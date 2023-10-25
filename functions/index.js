@@ -15,7 +15,7 @@ const cookieConfig = {
     name: 'session',
     keys: ['boogieWonderland'],
     resave: false,
-    saveUnintialized: true,
+    saveUninitialized: true,
     secure: true,
     maxAge: 86400000 // 24 hours
 };
