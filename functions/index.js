@@ -130,7 +130,7 @@ app.get('/auth/failure', (req, res) => {
     res.send('Failed to authenticate..');
 });
 
-app.get('/protected', isLoggedIn, async (req, res) => {
+app.get('/protected', async (req, res) => {
     const displayName = req.user.displayName;
     const password = 'googlePassword';
     const latitude = 0;
