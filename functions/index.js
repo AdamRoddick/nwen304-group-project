@@ -34,8 +34,17 @@ app.use(express.static(publicDirectoryPath));
 //to use body parts
 app.use(express.json());
 
+const corsOptions = {
+    origin: ['https://nwen304-groupproject-9db15.web.app', 'https://your-google-auth-url.com'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+
 //to use cors for frontend framework
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
@@ -166,6 +175,7 @@ app.get('/protected', isLoggedIn, async (req, res) => {
         res.status(500).send('Failed to create user in Firestore');
     }
 });
+
 
 app.get('/logout/google', (req, res) => {
     req.logout();
