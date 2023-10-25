@@ -19,9 +19,7 @@ const publicDirectoryPath = path.join(__dirname, '/public');
 
 require('./auth');
 app.use(session({
-    secret: 'cats',
-    resave: false,             // Add this line
-    saveUninitialized: false,  // Add this line
+    secret: 'cats'
 }));
 app.use(passport.initialize());
 app.use(passport.session());

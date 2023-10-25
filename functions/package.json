@@ -24,6 +24,7 @@
     "passport-google-oauth2": "^0.2.0"
   },
   "devDependencies": {
+    "eslint": "^8.52.0",
     "firebase-functions-test": "^3.1.0"
   },
   "private": true
