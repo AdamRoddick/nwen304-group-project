@@ -1,13 +1,13 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
-const GoogleClientID = '650668238065-r6dv4kc5vu6ge55j6mtskdvbpmtfjodf.apps.googleusercontent.com';
-const GoogleClientSecret = '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';
+const GoogleClientID = '39294675712-plngvbk9c04fvn5bk6mgs6jdnjsnobmi.apps.googleusercontent.com';
+const GoogleClientSecret = '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';
 
 passport.use(new GoogleStrategy({
-    clientID: GoogleClientID,
-    clientSecret: GoogleClientSecret,
-    callbackURL: "/auth/google/callback",
+    clientID: process.env.GoogleClientID,
+    clientSecret: process.env.GoogleClientSecret,
+    callbackURL: "https://nwen304-groupproject-9db15.web.app/auth/google/callback",
     passReqToCallback: true
 },
     function (request, accessToken, refreshToken, profile, done) {
