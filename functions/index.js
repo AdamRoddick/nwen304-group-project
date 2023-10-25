@@ -8,41 +8,6 @@ const ejs = require('ejs');
 // Require the Firebase Admin setup from the firebaseAdmin.js file
 const admin = require('./firebaseAdmin');
 const passport = require('passport');
-const cookieSession = require('cookie-session');
-const cookieParser = require('cookie-parser');
-
-const cookieConfig = {
-    name: 'session',
-    keys: ['boogieWonderland'],
-    resave: false,
-    saveUninitialized: true,
-    secure: true,
-    maxAge: 86400000 // 24 hours
-};
-
-//app.use(cookieSession(cookieConfig));
-//app.use(cookieParser());
-
-//Extending the session expiration time on each request
-/*app.use((req, res, next) => {
-    const session = req.session;
-    if (session) {
-        session.nowInMinutes = Math.floor(Date.now() / 60e3); //every minute
-    }
-    next();
-});*/
-
-/*const sessionConfig = {
-    database: admin.database(),
-    secret: 'boogieWonderland',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        sessionID: 'session',
-        secure: true,
-        maxAge: 86400000 // 24 hours
-    }
-};*/
 
 // Firestore database reference
 const db = admin.firestore();
@@ -79,7 +44,7 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'OurSpace' });
 });
 
-app.get('/login', async(req, res) => {
+app.get('/login', async (req, res) => {
     res.render('login', { title: 'OurSpace' });
 });
 
@@ -92,12 +57,12 @@ app.get('/profile', (req, res) => {
     res.render('profile', {
         title: 'OurSpace',
         username: fetch('/api/get-username')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch user data');
-            }
-            return response.json();
-        }) //Database should fetch the actual username and other stuff
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+                return response.json();
+            }) //Database should fetch the actual username and other stuff
     });
 });
 
@@ -171,7 +136,7 @@ app.get('/protected', isLoggedIn, async (req, res) => {
     const displayName = req.user.displayName;
     const password = 'googlePassword';
     const latitude = 0;
-    const longitude = 0; 
+    const longitude = 0;
     const usersCollection = db.collection('Users');
 
     try {
@@ -196,7 +161,7 @@ app.get('/protected', isLoggedIn, async (req, res) => {
 
             res.send(`Hello! ${displayName} "User created! please login with your google displayname, and your password is googlePassword"`);
             res.redirect('/');
-            
+
         }
     } catch (error) {
         console.error('Error during user creation:', error);
@@ -262,7 +227,7 @@ app.get('/api/get-username', async (req, res) => {
         const username = userData.Username;
         res.json({ username });
     } else {
-        res.json({ username: null }); 
+        res.json({ username: null });
     }
 });
 
@@ -282,7 +247,7 @@ app.get('/api/get-longtitude-latitude', async (req, res) => {
 });
 
 app.put('/api/update-longitude-latitude', async (req, res) => {
-    const userIdentifier = 'loggedUser'; 
+    const userIdentifier = 'loggedUser';
 
     // Extract the new longitude and latitude values from the request body
     const { longitude, latitude } = req.body;
@@ -361,7 +326,7 @@ app.get('/api/get-users', async (req, res) => {
 
 app.post('/api/create-post', (req, res) => {
     const postsCollection = db.collection('Posts');
-    const { title, text, user, time} = req.body;
+    const { title, text, user, time } = req.body;
 
     if (!title || !text || !user || !time) {
         return res.status(400).json({ message: 'Missing required data' });
